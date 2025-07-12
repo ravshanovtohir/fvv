@@ -55,7 +55,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Portal 24 API')
+    .setTitle('FVV API')
     .setDescription('The FVV API description')
     .setVersion('1.0')
     .addBearerAuth({
