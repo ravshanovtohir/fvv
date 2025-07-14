@@ -37,6 +37,7 @@ export class CreateCategoryDto {
     example: 'icon.png',
     required: true,
     type: String,
+    format: 'binary',
   })
   @IsNotEmpty()
   @IsString()

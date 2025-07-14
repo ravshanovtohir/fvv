@@ -67,6 +67,16 @@ export class DictionaryService {
     if (exists) {
       throw new BadRequestException('Слово уже существует!');
     }
+
+    const categoryExists = await this.prisma.category.findUnique({
+      where: {
+        id: data.category_id,
+      },
+    });
+    if (!categoryExists) {
+      throw new NotFoundException('Категория не найдена!');
+    }
+
     await this.prisma.dictionary.create({
       data: {
         prefix: data.prefix,
@@ -108,6 +118,18 @@ export class DictionaryService {
         throw new BadRequestException('Слово с таким префиксом или названием уже существует!');
       }
     }
+
+    if (data.category_id) {
+      const categoryExists = await this.prisma.category.findUnique({
+        where: {
+          id: data.category_id,
+        },
+      });
+      if (!categoryExists) {
+        throw new NotFoundException('Категория не найдена!');
+      }
+    }
+
     await this.prisma.dictionary.update({
       where: {
         id: id,

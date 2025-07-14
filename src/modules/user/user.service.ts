@@ -1,26 +1,77 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from './dto';
+import { PrismaService } from '@prisma';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(data: CreateUserDto) {
+    const exists = await this.prisma.user.findFirst({
+      where: { phone_number: data.phone_number },
+    });
+    if (exists) {
+      throw new BadRequestException('Пользователь с таким номером уже существует!');
+    }
+    await this.prisma.user.create({
+      data: {
+        name: data.name,
+        login: data.phone_number,
+        phone_number: data.phone_number,
+      },
+    });
+    return 'Пользователь успешно создан!';
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        login: true,
+        phone_number: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        login: true,
+        phone_number: true,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден!');
+    }
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, data: UpdateUserDto) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден!');
+    }
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        name: data.name ?? user.name,
+        login: data.login ?? user.login,
+        phone_number: data.phone_number ?? user.phone_number,
+      },
+    });
+    return 'Пользователь успешно обновлен!';
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден!');
+    }
+    await this.prisma.user.delete({ where: { id } });
+    return 'Пользователь успешно удален!';
   }
 }

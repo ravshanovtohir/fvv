@@ -17,6 +17,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto, GetCategoryDto } from './dto';
 import { ParamId } from '@enums';
 import { v4 as uuidv4 } from 'uuid';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 
 @Controller('category')
 export class CategoryController {
@@ -32,6 +33,8 @@ export class CategoryController {
   }
 
   @Post()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateCategoryDto })
   @UseInterceptors(
     FileInterceptor('icon', {
       storage: diskStorage({
@@ -45,12 +48,26 @@ export class CategoryController {
     }),
   )
   async create(@Body() data: CreateCategoryDto, @UploadedFile() file: Express.Multer.File) {
-    return this.categoryService.create(data, file?.filename);
+    return this.categoryService.create(data, file);
   }
 
   @Patch(':id')
-  update(@Param() param: ParamId, @Body() data: UpdateCategoryDto) {
-    return this.categoryService.update(param.id, data);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateCategoryDto })
+  @UseInterceptors(
+    FileInterceptor('icon', {
+      storage: diskStorage({
+        destination: './uploads/category_icons',
+        filename: (req, file, cb) => {
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  update(@Param() param: ParamId, @Body() data: UpdateCategoryDto, @UploadedFile() file: Express.Multer.File) {
+    return this.categoryService.update(param.id, data, file);
   }
 
   @Delete(':id')

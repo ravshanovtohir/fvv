@@ -33,6 +33,7 @@ export class UpdateCategoryDto {
     description: 'Category icon',
     example: 'icon.png',
     type: String,
+    format: 'binary',
   })
   @IsOptional()
   @IsString()

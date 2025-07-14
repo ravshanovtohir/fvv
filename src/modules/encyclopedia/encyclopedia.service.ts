@@ -58,6 +58,16 @@ export class EncyclopediaService {
     if (exists) {
       throw new BadRequestException('Энциклопедия уже существует!');
     }
+
+    const categoryExists = await this.prisma.category.findUnique({
+      where: {
+        id: data.category_id,
+      },
+    });
+    if (!categoryExists) {
+      throw new NotFoundException('Категория не найдена!');
+    }
+
     await this.prisma.encyclopedia.create({
       data: {
         title_uz: data.title_uz,
@@ -92,6 +102,18 @@ export class EncyclopediaService {
         throw new BadRequestException('Энциклопедия с таким названием уже существует!');
       }
     }
+
+    if (data.category_id) {
+      const categoryExists = await this.prisma.category.findUnique({
+        where: {
+          id: data.category_id,
+        },
+      });
+      if (!categoryExists) {
+        throw new NotFoundException('Категория не найдена!');
+      }
+    }
+
     await this.prisma.encyclopedia.update({
       where: { id },
       data: {

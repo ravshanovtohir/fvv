@@ -13,8 +13,10 @@ import {
   FirstaidModule,
   DictionaryModule,
   EncyclopediaModule,
+  AboutModule,
 } from '@modules';
-import { IntroContentModule } from './modules/intro_content/intro_content.module';
+import { NotificationModule } from './modules/notification/notification.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -30,7 +32,8 @@ import { IntroContentModule } from './modules/intro_content/intro_content.module
     CategoryModule,
     DictionaryModule,
     EncyclopediaModule,
-    IntroContentModule,
+    AboutModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],

@@ -68,6 +68,16 @@ export class FirstaidService {
     if (exists) {
       throw new BadRequestException('Первая помощь уже существует!');
     }
+
+    const categoryExists = await this.prisma.category.findUnique({
+      where: {
+        id: data.category_id,
+      },
+    });
+    if (!categoryExists) {
+      throw new NotFoundException('Категория не найдена!');
+    }
+
     await this.prisma.firstAid.create({
       data: {
         title_uz: data.title_uz,
@@ -110,6 +120,18 @@ export class FirstaidService {
         throw new BadRequestException('Первая помощь с таким названием уже существует!');
       }
     }
+
+    if (data.category_id) {
+      const categoryExists = await this.prisma.category.findUnique({
+        where: {
+          id: data.category_id,
+        },
+      });
+      if (!categoryExists) {
+        throw new NotFoundException('Категория не найдена!');
+      }
+    }
+
     await this.prisma.firstAid.update({
       where: { id },
       data: {

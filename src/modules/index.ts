@@ -3,6 +3,7 @@ export * from './auth';
 export * from './test';
 export * from './staff';
 export * from './staff';
+export * from './about';
 export * from './prisma';
 export * from './firstaid';
 export * from './category';
