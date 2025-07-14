@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { DictionaryService } from './dictionary.service';
-import { CreateDictionaryDto } from './dto/create-dictionary.dto';
-import { UpdateDictionaryDto } from './dto/update-dictionary.dto';
+import { CreateDictionaryDto, UpdateDictionaryDto, GetDictionaryDto } from './dto';
 
 @Controller('dictionary')
 export class DictionaryController {
   constructor(private readonly dictionaryService: DictionaryService) {}
 
-  @Post()
-  create(@Body() createDictionaryDto: CreateDictionaryDto) {
-    return this.dictionaryService.create(createDictionaryDto);
-  }
-
   @Get()
-  findAll() {
-    return this.dictionaryService.findAll();
+  async findAll(@Query() query: GetDictionaryDto) {
+    return this.dictionaryService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.dictionaryService.findOne(+id);
   }
 
+  @Post()
+  async create(@Body() createDictionaryDto: CreateDictionaryDto) {
+    return this.dictionaryService.create(createDictionaryDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDictionaryDto: UpdateDictionaryDto) {
+  async update(@Param('id') id: string, @Body() updateDictionaryDto: UpdateDictionaryDto) {
     return this.dictionaryService.update(+id, updateDictionaryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.dictionaryService.remove(+id);
   }
 }
