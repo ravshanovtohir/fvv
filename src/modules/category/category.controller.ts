@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto, GetCategoryDto } from './dto';
 import { ParamId } from '@enums';
@@ -25,6 +24,11 @@ export class CategoryController {
   @Get()
   async findAll(@Query() query: GetCategoryDto) {
     return this.categoryService.findAll(query);
+  }
+
+  @Get('category-type')
+  async getCategoryByType() {
+    return this.categoryService.getCategoryByType();
   }
 
   @Get(':id')

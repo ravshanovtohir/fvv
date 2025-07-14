@@ -44,4 +44,9 @@ export class GetCategoryDto extends PaginationOptionalDto {
   @Type(() => CategorySort)
   @ApiProperty({ type: CategorySort, required: false })
   sort?: CategorySort;
+
+  @ApiProperty({ type: Number, required: false })
+  @IsOptional()
+  @Type(() => Number)
+  type?: number;
 }

@@ -92,6 +92,7 @@ model FirstAid {
 
 model Category {
   id           Int            @id @default(autoincrement())
+  type         Int?
   title_uz     String
   title_ru     String
   title_en     String

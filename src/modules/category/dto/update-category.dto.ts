@@ -1,7 +1,16 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCategoryDto {
+  @ApiPropertyOptional({
+    description: 'Category type',
+    example: 1,
+    type: Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  type?: number;
+
   @ApiPropertyOptional({
     description: 'Category title in Uzbek',
     example: 'Kategoriya',

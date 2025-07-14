@@ -1,7 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCategoryDto {
+  @ApiProperty({
+    description: 'Category type',
+    example: 1,
+    required: true,
+    type: Number,
+  })
+  @IsNotEmpty()
+  @IsNumber()
+  type: number;
+
   @ApiProperty({
     description: 'Category title in Uzbek',
     example: 'Kategoriya',
@@ -39,7 +49,7 @@ export class CreateCategoryDto {
     type: String,
     format: 'binary',
   })
-  @IsNotEmpty()
-  @IsString()
+  // @IsNotEmpty()
+  // @IsString()
   icon: string; // Fayl yuklash bo'lsa, bu yerda fayl nomi yoki URL saqlanadi
 }

@@ -4,7 +4,7 @@ export * from './guards';
 export * from './logger';
 export * from './helpers';
 export * from './strategy';
-// export * from './constants';
+export * from './constants';
 export * from './interfaces';
 export * from './decorators';
 export * from './exceptions';
