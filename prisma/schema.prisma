@@ -14,7 +14,109 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id           Int     @id @default(autoincrement())
+  name         String?
+  login        String
+  phone_number String
+
+  @@map("user")
+}
+
+model Staff {
+  id        Int    @id @default(autoincrement())
+  full_name String
+  login     String
+  password  String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("staff")
+}
+
+model Encyclopedia {
+  id             Int      @id @default(autoincrement())
+  title_uz       String
+  title_ru       String
+  title_uen      String
+  description_uz String
+  description_ru String
+  description_en String
+  category_id    Int
+  category       Category @relation(fields: [category_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("encyclopedia")
+}
+
+model Dictionary {
+  id             Int      @id @default(autoincrement())
+  prefix         String
+  title_uz       String
+  title_ru       String
+  title_en       String
+  description_uz String
+  description_ru String
+  description_en String
+  category_id    Int
+  category       Category @relation(fields: [category_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@index([prefix])
+  @@map("dictionary")
+}
+
+model FirstAid {
+  id             Int    @id @default(autoincrement())
+  title_uz       String
+  title_ru       String
+  title_en       String
+  description_uz String
+  description_ru String
+  description_en String
+
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("first_aid")
+}
+
+model Category {
+  id           Int            @id @default(autoincrement())
+  title_uz     String
+  title_ru     String
+  title_en     String
+  icon         String
+  Encyclopedia Encyclopedia[]
+  Dictionary   Dictionary[]
+  FirstAid     FirstAid[]
+}
+
+model Test {
+  id          Int    @id @default(autoincrement())
+  question_uz String
+  question_ru String
+  question_en String
+  asnwers     Json
+  true_answer String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("test")
+}
+
+model Logo {
+  id    Int    @id @default(autoincrement())
+  image String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 }

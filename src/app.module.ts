@@ -4,7 +4,16 @@ import { validate } from '@config';
 import { WinstonLoggerService } from '@logger';
 import { LoggingInterceptor } from '@interceptors';
 import { PrismaModule } from '@prisma';
-import { AuthModule } from '@modules';
+import {
+  AuthModule,
+  UserModule,
+  TestModule,
+  StaffModule,
+  CategoryModule,
+  FirstaidModule,
+  DictionaryModule,
+  EncyclopediaModule,
+} from '@modules';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,7 +21,14 @@ import { AuthModule } from '@modules';
       validate,
     }),
     AuthModule,
+    UserModule,
+    TestModule,
+    StaffModule,
     PrismaModule,
+    FirstaidModule,
+    CategoryModule,
+    DictionaryModule,
+    EncyclopediaModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],
