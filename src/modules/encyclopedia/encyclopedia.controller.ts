@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { EncyclopediaService } from './encyclopedia.service';
-import { CreateEncyclopediaDto } from './dto/create-encyclopedia.dto';
-import { UpdateEncyclopediaDto } from './dto/update-encyclopedia.dto';
+import { CreateEncyclopediaDto, UpdateEncyclopediaDto, GetEncyclopediaDto } from './dto';
 
 @Controller('encyclopedia')
 export class EncyclopediaController {
   constructor(private readonly encyclopediaService: EncyclopediaService) {}
 
-  @Post()
-  create(@Body() createEncyclopediaDto: CreateEncyclopediaDto) {
-    return this.encyclopediaService.create(createEncyclopediaDto);
-  }
-
   @Get()
-  findAll() {
-    return this.encyclopediaService.findAll();
+  async findAll(@Query() query: GetEncyclopediaDto) {
+    return this.encyclopediaService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.encyclopediaService.findOne(+id);
   }
 
+  @Post()
+  async create(@Body() createEncyclopediaDto: CreateEncyclopediaDto) {
+    return this.encyclopediaService.create(createEncyclopediaDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEncyclopediaDto: UpdateEncyclopediaDto) {
+  async update(@Param('id') id: string, @Body() updateEncyclopediaDto: UpdateEncyclopediaDto) {
     return this.encyclopediaService.update(+id, updateEncyclopediaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.encyclopediaService.remove(+id);
   }
 }

@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { FirstaidService } from './firstaid.service';
-import { CreateFirstaidDto } from './dto/create-firstaid.dto';
-import { UpdateFirstaidDto } from './dto/update-firstaid.dto';
+import { CreateFirstaidDto, UpdateFirstaidDto, GetFirstaidDto } from './dto';
 
 @Controller('firstaid')
 export class FirstaidController {
   constructor(private readonly firstaidService: FirstaidService) {}
 
-  @Post()
-  create(@Body() createFirstaidDto: CreateFirstaidDto) {
-    return this.firstaidService.create(createFirstaidDto);
-  }
-
   @Get()
-  findAll() {
-    return this.firstaidService.findAll();
+  async findAll(@Query() query: GetFirstaidDto) {
+    return this.firstaidService.findAll(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.firstaidService.findOne(+id);
   }
 
+  @Post()
+  async create(@Body() createFirstaidDto: CreateFirstaidDto) {
+    return this.firstaidService.create(createFirstaidDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFirstaidDto: UpdateFirstaidDto) {
+  async update(@Param('id') id: string, @Body() updateFirstaidDto: UpdateFirstaidDto) {
     return this.firstaidService.update(+id, updateFirstaidDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.firstaidService.remove(+id);
   }
 }

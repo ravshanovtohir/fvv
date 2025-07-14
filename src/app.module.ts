@@ -14,6 +14,7 @@ import {
   DictionaryModule,
   EncyclopediaModule,
 } from '@modules';
+import { IntroContentModule } from './modules/intro_content/intro_content.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +30,7 @@ import {
     CategoryModule,
     DictionaryModule,
     EncyclopediaModule,
+    IntroContentModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],

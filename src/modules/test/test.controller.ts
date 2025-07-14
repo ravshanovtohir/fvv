@@ -1,34 +1,43 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TestService } from './test.service';
-import { CreateTestDto } from './dto/create-test.dto';
-import { UpdateTestDto } from './dto/update-test.dto';
+import { CreateTestDto, UpdateTestDto } from './dto';
 
 @Controller('test')
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
-  @Post()
-  create(@Body() createTestDto: CreateTestDto) {
-    return this.testService.create(createTestDto);
-  }
-
   @Get()
-  findAll() {
+  async findAll() {
     return this.testService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.testService.findOne(+id);
   }
 
+  @Post()
+  async create(@Body() createTestDto: CreateTestDto) {
+    return this.testService.create(createTestDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {
+  async update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {
     return this.testService.update(+id, updateTestDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.testService.remove(+id);
+  }
+
+  @Post(':id/check')
+  async checkAnswer(@Param('id') id: string, @Body() body: { answer: string }) {
+    return this.testService.checkAnswer(+id, body.answer);
+  }
+
+  @Get('start/:count')
+  async startTest(@Param('count') count: string) {
+    return this.testService.startTest(+count);
   }
 }

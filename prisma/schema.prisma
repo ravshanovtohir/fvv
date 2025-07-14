@@ -118,6 +118,22 @@ model Test {
   @@map("test")
 }
 
+model IntroContent {
+  id Int @id @default(autoincrement())
+  name_uz String?
+  name_ru String?
+  name_en String?
+  title_uz String?
+  title_ru String?
+  title_en String?
+  image String?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("intro_content")
+}
+
 model Logo {
   id    Int    @id @default(autoincrement())
   image String
