@@ -97,6 +97,11 @@ model Category {
   Encyclopedia Encyclopedia[]
   Dictionary   Dictionary[]
   FirstAid     FirstAid[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("category")
 }
 
 model Test {

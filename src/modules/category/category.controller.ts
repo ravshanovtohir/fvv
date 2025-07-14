@@ -1,14 +1,29 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto, UpdateCategoryDto } from './dto';
+import { CreateCategoryDto, UpdateCategoryDto, GetCategoryDto } from './dto';
 import { ParamId } from '@enums';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  async findAll(@Query() query: GetCategoryDto) {
+    return this.categoryService.findAll(query);
   }
 
   @Get(':id')
@@ -17,8 +32,20 @@ export class CategoryController {
   }
 
   @Post()
-  create(@Body() data: CreateCategoryDto) {
-    return this.categoryService.create(data);
+  @UseInterceptors(
+    FileInterceptor('icon', {
+      storage: diskStorage({
+        destination: './uploads/category_icons',
+        filename: (req, file, cb) => {
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  async create(@Body() data: CreateCategoryDto, @UploadedFile() file: Express.Multer.File) {
+    return this.categoryService.create(data, file?.filename);
   }
 
   @Patch(':id')
