@@ -15,7 +15,7 @@ export class CreateEncyclopediaDto {
   @ApiProperty({ description: 'Title in English', example: 'Topic', required: true, type: String })
   @IsNotEmpty()
   @IsString()
-  title_uen: string;
+  title_en: string;
 
   @ApiProperty({ description: 'Description in Uzbek', example: 'Izoh', required: true, type: String })
   @IsNotEmpty()

@@ -1,43 +1,113 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Query } from '@nestjs/common';
 import { TestService } from './test.service';
-import { CreateTestDto, UpdateTestDto } from './dto';
+import { CreateTestDto, UpdateTestDto, StartUserTestDto, AnswerTestDto, GetTestDto } from './dto';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { IRequest } from '@interfaces';
+import { HeadersValidation } from '@decorators';
+import { DeviceHeadersDto } from '@enums';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('test')
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
+  @ApiOperation({ summary: 'Get all tests mobile', description: 'Get all tests mobile' })
   @Get()
-  async findAll() {
-    return this.testService.findAll();
+  async findAll(@Query() query: GetTestDto, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.testService.findAll(query, headers.lang);
   }
 
+  @ApiOperation({ summary: 'Get one test mobile', description: 'Get one test mobile' })
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.testService.findOne(+id);
+  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.testService.findOne(+id, headers.lang);
   }
 
+  @ApiOperation({ summary: 'Get all tests admin', description: 'Get all tests admin' })
+  @Get('admin/tests')
+  async findAllAdmin(@Query() query: GetTestDto) {
+    return this.testService.findAllAdmin(query);
+  }
+
+  @ApiOperation({ summary: 'Get one test admin', description: 'Get one test admin' })
+  @Get('admin/tests/:id')
+  async findOneAdmin(@Param('id') id: string) {
+    return this.testService.findOneAdmin(+id);
+  }
+
+  @ApiOperation({ summary: 'Create test admin', description: 'Create test admin' })
   @Post()
   async create(@Body() createTestDto: CreateTestDto) {
     return this.testService.create(createTestDto);
   }
 
+  @ApiOperation({ summary: 'Update test admin', description: 'Update test admin' })
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {
     return this.testService.update(+id, updateTestDto);
   }
 
+  @ApiOperation({ summary: 'Delete test admin', description: 'Delete test admin' })
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.testService.remove(+id);
   }
 
+  @ApiOperation({ summary: 'Check answer', description: 'Check answer' })
   @Post(':id/check')
   async checkAnswer(@Param('id') id: string, @Body() body: { answer: string }) {
     return this.testService.checkAnswer(+id, body.answer);
   }
 
+  @ApiOperation({ summary: 'Start test', description: 'Start test' })
   @Get('start/:count')
   async startTest(@Param('count') count: string) {
     return this.testService.startTest(+count);
+  }
+
+  // --- USER TEST SESSION ENDPOINTS ---
+
+  @ApiOperation({ summary: 'Start user test for mobile', description: 'Start user test for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Post('/user-tests/start')
+  async startUserTest(@Body() dto: StartUserTestDto, @Req() request: IRequest) {
+    return this.testService.startUserTest(dto.category_id, request.user.id);
+  }
+
+  @ApiOperation({ summary: 'Get next test for mobile', description: 'Get next test for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Get('/user-tests/:session_id/next')
+  async getNextTest(
+    @Param('session_id') session_id: number,
+    @Req() request: IRequest,
+    @HeadersValidation() headers: DeviceHeadersDto,
+  ) {
+    return this.testService.getNextTest(+session_id, request.user.id, headers.lang);
+  }
+
+  @ApiOperation({ summary: 'Answer test for mobile', description: 'Answer test for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Post('/user-tests/:session_id/answer')
+  async answerTest(
+    @Param('session_id') session_id: string,
+    @Body() dto: AnswerTestDto,
+    @Req() request: IRequest,
+    @HeadersValidation() headers: DeviceHeadersDto,
+  ) {
+    return this.testService.answerTest(Number(session_id), dto.test_id, dto.answer, request.user.id, headers.lang);
+  }
+
+  @ApiOperation({ summary: 'Finish user test for mobile', description: 'Finish user test for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Post('/user-tests/:session_id/finish')
+  async finishUserTest(@Param('session_id') session_id: string, @Req() request: IRequest) {
+    return this.testService.finishUserTest(Number(session_id), request.user.id);
+  }
+
+  @ApiOperation({ summary: 'Get user test history for mobile', description: 'Get user test history for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Get('/user-tests/history')
+  async getUserTestHistory(@Req() request: IRequest) {
+    return this.testService.getUserTestHistory(request.user.id);
   }
 }

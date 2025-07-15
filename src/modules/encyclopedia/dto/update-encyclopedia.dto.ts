@@ -15,7 +15,7 @@ export class UpdateEncyclopediaDto {
   @ApiPropertyOptional({ description: 'Title in English', example: 'Topic', required: false, type: String })
   @IsOptional()
   @IsString()
-  title_uen?: string;
+  title_en?: string;
 
   @ApiPropertyOptional({ description: 'Description in Uzbek', example: 'Izoh', required: false, type: String })
   @IsOptional()

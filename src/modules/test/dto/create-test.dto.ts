@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsArray, IsObject } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray, IsObject, IsNumber } from 'class-validator';
 
 export class CreateTestDto {
   @ApiProperty({ description: 'Savol (uz)', example: 'Poytaxti qayer?', required: true, type: String })
@@ -32,10 +32,49 @@ export class CreateTestDto {
   @IsNotEmpty()
   @IsArray()
   @IsObject({ each: true })
-  asnwers: Array<{ key: string; value: string }>;
+  answers_uz: Array<{ key: string; value: string }>;
+
+  @ApiProperty({
+    description: 'Javob variantlari (ru)',
+    example: [
+      { key: 'A', value: 'Toshkent' },
+      { key: 'B', value: 'Samarqand' },
+      { key: 'C', value: 'Buxoro' },
+      { key: 'D', value: 'Xiva' },
+    ],
+    required: true,
+    type: Array,
+    items: { type: 'object', properties: { key: { type: 'string' }, value: { type: 'string' } } },
+  })
+  @IsNotEmpty()
+  @IsArray()
+  @IsObject({ each: true })
+  answers_ru: Array<{ key: string; value: string }>;
+
+  @ApiProperty({
+    description: 'Javob variantlari (en)',
+    example: [
+      { key: 'A', value: 'Toshkent' },
+      { key: 'B', value: 'Samarqand' },
+      { key: 'C', value: 'Buxoro' },
+      { key: 'D', value: 'Xiva' },
+    ],
+    required: true,
+    type: Array,
+    items: { type: 'object', properties: { key: { type: 'string' }, value: { type: 'string' } } },
+  })
+  @IsNotEmpty()
+  @IsArray()
+  @IsObject({ each: true })
+  answers_en: Array<{ key: string; value: string }>;
 
   @ApiProperty({ description: 'To‘g‘ri javob kaliti (masalan, A)', example: 'A', required: true, type: String })
   @IsNotEmpty()
   @IsString()
   true_answer: string;
+
+  @ApiProperty({ description: 'Kategoriya ID', example: 1, required: true, type: Number })
+  @IsNotEmpty()
+  @IsNumber()
+  category_id: number;
 }

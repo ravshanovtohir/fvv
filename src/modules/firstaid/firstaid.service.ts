@@ -7,7 +7,56 @@ import { paginate } from '@helpers';
 export class FirstaidService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(query: GetFirstaidDto) {
+  async findAll(query: GetFirstaidDto, lang: string) {
+    const firstaids = await paginate('firstAid', {
+      page: query.page,
+      size: query.size,
+      sort: query.sort,
+      filter: query.filters,
+      select: {
+        id: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+    return {
+      ...firstaids,
+      data: firstaids.data.map((firstaid) => ({
+        id: firstaid.id,
+        title: firstaid[`title_${lang}`],
+        description: firstaid[`description_${lang}`],
+        category_id: firstaid.category_id,
+        created_at: firstaid.created_at,
+      })),
+    };
+  }
+
+  async findOne(id: number, lang: string) {
+    const firstaid = await this.prisma.firstAid.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+    if (!firstaid) {
+      throw new NotFoundException('Первая помощь не найдена!');
+    }
+    return {
+      id: firstaid.id,
+      title: firstaid[`title_${lang}`],
+      description: firstaid[`description_${lang}`],
+      category_id: firstaid.category_id,
+      created_at: firstaid.created_at,
+    };
+  }
+
+  async findAllAdmin(query: GetFirstaidDto) {
     const firstaids = await paginate('firstAid', {
       page: query.page,
       size: query.size,
@@ -25,10 +74,19 @@ export class FirstaidService {
         created_at: true,
       },
     });
-    return firstaids;
+    return {
+      ...firstaids,
+      data: firstaids.data.map((firstaid) => ({
+        id: firstaid.id,
+        title: firstaid.title_uz,
+        description: firstaid.description_uz,
+        category_id: firstaid.category_id,
+        created_at: firstaid.created_at,
+      })),
+    };
   }
 
-  async findOne(id: number) {
+  async findOneAdmin(id: number) {
     const firstaid = await this.prisma.firstAid.findUnique({
       where: { id },
       select: {
@@ -43,10 +101,18 @@ export class FirstaidService {
         created_at: true,
       },
     });
+
     if (!firstaid) {
       throw new NotFoundException('Первая помощь не найдена!');
     }
-    return firstaid;
+
+    return {
+      id: firstaid.id,
+      title: firstaid.title_uz,
+      description: firstaid.description_uz,
+      category_id: firstaid.category_id,
+      created_at: firstaid.created_at,
+    };
   }
 
   async create(data: CreateFirstaidDto) {

@@ -7,7 +7,56 @@ import { paginate } from '@helpers';
 export class EncyclopediaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(query: GetEncyclopediaDto) {
+  async findAll(query: GetEncyclopediaDto, lang: string) {
+    const encyclopedias = await paginate('encyclopedia', {
+      page: query.page,
+      size: query.size,
+      sort: query.sort,
+      filter: query.filters,
+      select: {
+        id: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+    return {
+      ...encyclopedias,
+      data: encyclopedias.data.map((encyclopedia) => ({
+        id: encyclopedia.id,
+        title: encyclopedia[`title_${lang}`],
+        description: encyclopedia[`description_${lang}`],
+        category_id: encyclopedia.category_id,
+        created_at: encyclopedia.created_at,
+      })),
+    };
+  }
+
+  async findOne(id: number, lang: string) {
+    const encyclopedia = await this.prisma.encyclopedia.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+    if (!encyclopedia) {
+      throw new NotFoundException('Энциклопедия не найдена!');
+    }
+    return {
+      id: encyclopedia.id,
+      title: encyclopedia[`title_${lang}`],
+      description: encyclopedia[`description_${lang}`],
+      category_id: encyclopedia.category_id,
+      created_at: encyclopedia.created_at,
+    };
+  }
+
+  async findAllAdmin(query: GetEncyclopediaDto) {
     const encyclopedias = await paginate('encyclopedia', {
       page: query.page,
       size: query.size,
@@ -17,7 +66,7 @@ export class EncyclopediaService {
         id: true,
         title_uz: true,
         title_ru: true,
-        title_uen: true,
+        title_en: true,
         description_uz: true,
         description_ru: true,
         description_en: true,
@@ -28,14 +77,16 @@ export class EncyclopediaService {
     return encyclopedias;
   }
 
-  async findOne(id: number) {
+  async findOneAdmin(id: number) {
     const encyclopedia = await this.prisma.encyclopedia.findUnique({
-      where: { id },
+      where: {
+        id: id,
+      },
       select: {
         id: true,
         title_uz: true,
         title_ru: true,
-        title_uen: true,
+        title_en: true,
         description_uz: true,
         description_ru: true,
         description_en: true,
@@ -52,7 +103,7 @@ export class EncyclopediaService {
   async create(data: CreateEncyclopediaDto) {
     const exists = await this.prisma.encyclopedia.findFirst({
       where: {
-        OR: [{ title_uz: data.title_uz }, { title_ru: data.title_ru }, { title_uen: data.title_uen }],
+        OR: [{ title_uz: data.title_uz }, { title_ru: data.title_ru }, { title_en: data.title_en }],
       },
     });
     if (exists) {
@@ -72,7 +123,7 @@ export class EncyclopediaService {
       data: {
         title_uz: data.title_uz,
         title_ru: data.title_ru,
-        title_uen: data.title_uen,
+        title_en: data.title_en,
         description_uz: data.description_uz,
         description_ru: data.description_ru,
         description_en: data.description_en,
@@ -87,14 +138,14 @@ export class EncyclopediaService {
     if (!encyclopedia) {
       throw new NotFoundException('Энциклопедия не найдена!');
     }
-    if (data.title_uz || data.title_ru || data.title_uen) {
+    if (data.title_uz || data.title_ru || data.title_en) {
       const duplicate = await this.prisma.encyclopedia.findFirst({
         where: {
           id: { not: id },
           OR: [
             data.title_uz ? { title_uz: data.title_uz } : undefined,
             data.title_ru ? { title_ru: data.title_ru } : undefined,
-            data.title_uen ? { title_uen: data.title_uen } : undefined,
+            data.title_en ? { title_en: data.title_en } : undefined,
           ].filter(Boolean),
         },
       });
@@ -119,7 +170,7 @@ export class EncyclopediaService {
       data: {
         title_uz: data.title_uz ?? encyclopedia.title_uz,
         title_ru: data.title_ru ?? encyclopedia.title_ru,
-        title_uen: data.title_uen ?? encyclopedia.title_uen,
+        title_en: data.title_en ?? encyclopedia.title_en,
         description_uz: data.description_uz ?? encyclopedia.description_uz,
         description_ru: data.description_ru ?? encyclopedia.description_ru,
         description_en: data.description_en ?? encyclopedia.description_en,

@@ -7,7 +7,63 @@ import { paginate } from '@helpers';
 export class DictionaryService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(query: GetDictionaryDto) {
+  async findAll(query: GetDictionaryDto, lang: string) {
+    const dictionaries = await paginate('dictionary', {
+      page: query.page,
+      size: query.size,
+      sort: query.sort,
+      filter: query.filters,
+      select: {
+        id: true,
+        prefix: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+
+    return {
+      ...dictionaries,
+      data: dictionaries.data.map((dictionary) => ({
+        id: dictionary.id,
+        prefix: dictionary.prefix,
+        title: dictionary[`title_${lang}`],
+        description: dictionary[`description_${lang}`],
+        category_id: dictionary.category_id,
+        created_at: dictionary.created_at,
+      })),
+    };
+  }
+
+  async findOne(id: number, lang: string) {
+    const dictionary = await this.prisma.dictionary.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        prefix: true,
+        [`title_${lang}`]: true,
+        [`description_${lang}`]: true,
+        category_id: true,
+        created_at: true,
+      },
+    });
+    if (!dictionary) {
+      throw new NotFoundException('Слово не найдено!');
+    }
+    return {
+      id: dictionary.id,
+      prefix: dictionary.prefix,
+      title: dictionary[`title_${lang}`],
+      description: dictionary[`description_${lang}`],
+      category_id: dictionary.category_id,
+      created_at: dictionary.created_at,
+    };
+  }
+
+  async findAllAdmin(query: GetDictionaryDto) {
     const dictionaries = await paginate('dictionary', {
       page: query.page,
       size: query.size,
@@ -29,11 +85,9 @@ export class DictionaryService {
     return dictionaries;
   }
 
-  async findOne(id: number) {
+  async findOneAdmin(id: number) {
     const dictionary = await this.prisma.dictionary.findUnique({
-      where: {
-        id: id,
-      },
+      where: { id },
       select: {
         id: true,
         prefix: true,
@@ -47,9 +101,6 @@ export class DictionaryService {
         created_at: true,
       },
     });
-    if (!dictionary) {
-      throw new NotFoundException('Слово не найдено!');
-    }
     return dictionary;
   }
 

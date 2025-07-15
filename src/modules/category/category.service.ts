@@ -2,15 +2,15 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CreateCategoryDto, GetCategoryDto, UpdateCategoryDto } from './dto';
 import { PrismaService } from '@prisma';
 import { paginate } from '@helpers';
-import { CategoryType } from '@constants';
+import { CategoryType, FilePath } from '@constants';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class CategoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(query: GetCategoryDto) {
-    console.log(query);
-
     const categories = await paginate('category', {
       page: query.page,
       size: query.size,
@@ -35,6 +35,7 @@ export class CategoryService {
       data: categories.data.map((category) => ({
         ...category,
         type: CategoryType[category.type],
+        image: `${FilePath.CATEGORY_ICON}/${category.icon}`,
       })),
     };
   }
@@ -58,6 +59,7 @@ export class CategoryService {
     return {
       ...category,
       type: CategoryType[category.type],
+      image: `${FilePath.CATEGORY_ICON}/${category.icon}`,
     };
   }
 
@@ -69,18 +71,48 @@ export class CategoryService {
     return categories;
   }
 
-  async create(data: CreateCategoryDto, fileName: string) {
-    const categoryExists = await this.prisma.category.findFirst({
-      where: {
-        type: data.type,
-        OR: [{ title_uz: data.title_uz }, { title_ru: data.title_ru }, { title_en: data.title_en }],
+  async findAllPublic(lang: string) {
+    const categories = await this.prisma.category.findMany({
+      select: {
+        id: true,
+        type: true,
+        [`title_${lang}`]: true,
+        icon: true,
+        created_at: true,
       },
     });
 
-    if (categoryExists) {
-      throw new BadRequestException('Категория уже существует!');
-    }
+    return categories.map((category) => ({
+      id: category.id,
+      type: CategoryType[+category.type],
+      title: category[`title_${lang}`],
+      image: `${FilePath.CATEGORY_ICON}/${category.icon}`,
+      created_at: category.created_at,
+    }));
+  }
 
+  async findOnePublic(id: number, lang: string) {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        type: true,
+        [`title_${lang}`]: true,
+        icon: true,
+        created_at: true,
+      },
+    });
+
+    return {
+      id: category.id,
+      title: category[`title_${lang}`],
+      type: CategoryType[+category.type],
+      image: `${FilePath.CATEGORY_ICON}/${category.icon}`,
+      created_at: category.created_at,
+    };
+  }
+
+  async create(data: CreateCategoryDto, fileName: string) {
     if (!Object.keys(CategoryType).includes(String(data.type))) {
       throw new BadRequestException('Неверный тип категории!');
     }
@@ -98,7 +130,7 @@ export class CategoryService {
     return 'Категория успешно создана!';
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto, fileName: string) {
+  async update(id: number, data: UpdateCategoryDto, fileName: string) {
     const categoryExists = await this.prisma.category.findFirst({
       where: {
         id: id,
@@ -109,27 +141,25 @@ export class CategoryService {
       throw new NotFoundException('Категория не найдена!');
     }
 
-    const categoryNameExists = await this.prisma.category.findFirst({
-      where: {
-        OR: [
-          { title_uz: updateCategoryDto.title_uz },
-          { title_ru: updateCategoryDto.title_ru },
-          { title_en: updateCategoryDto.title_en },
-        ],
-      },
-    });
+    if (fileName) {
+      const imagePath = path.join(process.cwd(), 'uploads', 'category_icons', categoryExists.icon);
 
-    if (categoryNameExists) {
-      throw new BadRequestException('Категория уже существует!');
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
+    if (data.type && !Object.keys(CategoryType).includes(String(data.type))) {
+      throw new BadRequestException('Неверный тип категории!');
     }
 
     await this.prisma.category.update({
       where: { id },
       data: {
-        type: updateCategoryDto.type ?? categoryExists.type,
-        title_uz: updateCategoryDto.title_uz ?? categoryExists.title_uz,
-        title_ru: updateCategoryDto.title_ru ?? categoryExists.title_ru,
-        title_en: updateCategoryDto.title_en ?? categoryExists.title_en,
+        type: data.type ?? categoryExists.type,
+        title_uz: data.title_uz ?? categoryExists.title_uz,
+        title_ru: data.title_ru ?? categoryExists.title_ru,
+        title_en: data.title_en ?? categoryExists.title_en,
         icon: fileName ?? categoryExists.icon,
       },
     });
@@ -153,6 +183,12 @@ export class CategoryService {
         id: id,
       },
     });
+
+    const imagePath = path.join(process.cwd(), 'uploads', 'category_icons', categoryExists.icon);
+
+    if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
 
     return 'Категория успешно удалена!';
   }

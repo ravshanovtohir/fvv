@@ -14,12 +14,13 @@ datasource db {
 }
 
 model User {
-  id            Int                @id @default(autoincrement())
-  name          String?
-  login         String
-  phone_number  String
-  fcm_token     String?
-  notifications NotificationUser[]
+  id               Int                @id @default(autoincrement())
+  name             String?
+  login            String
+  phone_number     String
+  fcm_token        String?
+  notifications    NotificationUser[]
+  userTestSessions UserTestSession[]
 
   @@map("user")
 }
@@ -40,7 +41,7 @@ model Encyclopedia {
   id             Int      @id @default(autoincrement())
   title_uz       String
   title_ru       String
-  title_uen      String
+  title_en       String
   description_uz String
   description_ru String
   description_en String
@@ -91,15 +92,17 @@ model FirstAid {
 }
 
 model Category {
-  id           Int            @id @default(autoincrement())
-  type         Int?
-  title_uz     String
-  title_ru     String
-  title_en     String
-  icon         String
-  Encyclopedia Encyclopedia[]
-  Dictionary   Dictionary[]
-  FirstAid     FirstAid[]
+  id               Int               @id @default(autoincrement())
+  type             Int?
+  title_uz         String
+  title_ru         String
+  title_en         String
+  icon             String
+  Encyclopedia     Encyclopedia[]
+  Dictionary       Dictionary[]
+  FirstAid         FirstAid[]
+  Test             Test[]
+  userTestSessions UserTestSession[]
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -108,12 +111,18 @@ model Category {
 }
 
 model Test {
-  id          Int    @id @default(autoincrement())
-  question_uz String
-  question_ru String
-  question_en String
-  asnwers     Json
-  true_answer String
+  id              Int              @id @default(autoincrement())
+  question_uz     String
+  question_ru     String
+  question_en     String
+  answers_uz      Json
+  answers_ru      Json
+  answers_en      Json
+  true_answer     String
+  userTestAnswers UserTestAnswer[]
+
+  category_id Int
+  category    Category @relation(fields: [category_id], references: [id])
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -186,4 +195,59 @@ model NotificationUser {
 
   @@unique([notification_id, user_id])
   @@map("notification_user")
+}
+
+model UserTestSession {
+  id          Int              @id @default(autoincrement())
+  user_id     Int
+  category_id Int
+  started_at  DateTime         @default(now())
+  finished_at DateTime?
+  answers     UserTestAnswer[]
+  score       Int?
+  percent     Float?
+  total       Int?
+  correct     Int?
+  wrong       Int?
+
+  user     User     @relation(fields: [user_id], references: [id])
+  category Category @relation(fields: [category_id], references: [id])
+}
+
+model UserTestAnswer {
+  id         Int     @id @default(autoincrement())
+  session_id Int
+  test_id    Int
+  answer     String
+  is_correct Boolean
+
+  session UserTestSession @relation(fields: [session_id], references: [id])
+  test    Test            @relation(fields: [test_id], references: [id])
+}
+
+model Region {
+  id        Int        @id @default(autoincrement())
+  name_uz   String
+  name_ru   String
+  name_en   String
+  districts District[]
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("region")
+}
+
+model District {
+  id        Int    @id @default(autoincrement())
+  name_uz   String
+  name_ru   String
+  name_en   String
+  region_id Int
+  region    Region @relation(fields: [region_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("district")
 }

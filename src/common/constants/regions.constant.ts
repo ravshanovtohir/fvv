@@ -1,0 +1,86 @@
+export const REGIONS = [
+  {
+    id: 10,
+    name_uz: 'TASHKENT SHAHRI',
+    name_ru: 'ТОШКЕНТ ШАҲРИ',
+    name_en: 'TASHKENT CITY',
+  },
+  {
+    id: 11,
+    name_uz: 'TASHKENT VILOYATI',
+    name_ru: 'ТОШКЕНТ ВИЛОЯТИ',
+    name_en: 'TASHKENT REGION',
+  },
+  {
+    id: 12,
+    name_uz: 'SIRDARYO VILOYATI',
+    name_ru: 'СИРДАРЁ ВИЛОЯТИ',
+    name_en: 'SIRDARYO REGION',
+  },
+  {
+    id: 13,
+    name_uz: 'JIZZAX VILOYATI',
+    name_ru: 'ЖИЗЗАХ ВИЛОЯТИ',
+    name_en: 'JIZZAX REGION',
+  },
+  {
+    id: 14,
+    name_uz: 'SAMARKAND VILOYATI',
+    name_ru: 'САМАРҚАНД ВИЛОЯТИ',
+    name_en: 'SAMARKAND REGION',
+  },
+  {
+    id: 15,
+    name_uz: 'FARGHONA VILOYATI',
+    name_ru: 'ФАРҒОНА ВИЛОЯТИ',
+    name_en: 'FARGHONA REGION',
+  },
+  {
+    id: 16,
+    name_uz: 'NAMANGAN VILOYATI',
+    name_ru: 'НАМАНГАН ВИЛОЯТИ',
+    name_en: 'NAMANGAN REGION',
+  },
+  {
+    id: 17,
+    name_uz: 'ANDIJAN VILOYATI',
+    name_ru: 'АНДИЖОН ВИЛОЯТИ',
+    name_en: 'ANDIJAN REGION',
+  },
+  {
+    id: 18,
+    name_uz: 'KASHKADARYO VILOYATI',
+    name_ru: 'ҚАШҚАДАРЁ ВИЛОЯТИ',
+    name_en: 'KASHKADARYO REGION',
+  },
+  {
+    id: 19,
+    name_uz: 'SURKHONDARYO VILOYATI',
+    name_ru: 'СУРХОНДАРЁ ВИЛОЯТИ',
+    name_en: 'SURKHONDARYO REGION',
+  },
+  {
+    id: 20,
+    name_uz: 'BUKHARA VILOYATI',
+    name_ru: 'БУХОРО ВИЛОЯТИ',
+    name_en: 'BUKHARA REGION',
+  },
+  {
+    id: 21,
+    name_uz: 'NAVOIY VILOYATI',
+    name_ru: 'НАВОИЙ ВИЛОЯТИ',
+    name_en: 'NAVOIY REGION',
+  },
+  {
+    id: 22,
+    name_uz: 'XORAZM VILOYATI',
+    name_ru: 'ХОРАЗМ ВИЛОЯТИ',
+    name_en: 'XORAZM REGION',
+  },
+  {
+    id: 23,
+    name_uz: 'QORAQALPOGISTON REPUBLIC',
+    name_ru: 'ҚОРАҚАЛПОҒИСТОН РЕСПУБЛИКАСИ',
+    name_en: 'QORAQALPOGISTON REPUBLIC',
+  },
+];
