@@ -3,12 +3,34 @@ import { CreateAboutDto, UpdateAboutDto, CreateContactDto, UpdateContactDto } fr
 import { PrismaService } from '@prisma';
 import * as path from 'path';
 import * as fs from 'fs';
+import { FilePath } from '@constants';
 
 @Injectable()
 export class AboutService {
   constructor(private readonly prisma: PrismaService) {}
 
   async find(lang: string) {
+    const about = await this.prisma.about.findFirst({
+      select: {
+        [`name_${lang}`]: true,
+        [`title_${lang}`]: true,
+        image: true,
+        phone_number: true,
+        [`address_${lang}`]: true,
+        created_at: true,
+      },
+    });
+
+    return {
+      name: about[`name_${lang}`],
+      title: about[`title_${lang}`],
+      image: `${FilePath.LOGO}/${about?.image}`,
+      phone_number: about?.phone_number,
+      address: about[`address_${lang}`],
+    };
+  }
+
+  async findAdmin() {
     const about = await this.prisma.about.findFirst({
       select: {
         name_uz: true,
@@ -27,11 +49,8 @@ export class AboutService {
     });
 
     return {
-      name: about[`name_${lang}`],
-      title: about[`title_${lang}`],
-      image: about?.image,
-      phone_number: about?.phone_number,
-      address: about[`address_${lang}`],
+      ...about,
+      image: `${FilePath.LOGO}/${about?.image}`,
     };
   }
 
@@ -60,10 +79,18 @@ export class AboutService {
     return 'About успешно создан!';
   }
 
-  async update(updateAboutDto: UpdateAboutDto, fileName: string) {
+  async update(data: UpdateAboutDto, fileName: string) {
     const aboutExists = await this.prisma.about.findFirst();
     if (!aboutExists) {
       throw new NotFoundException('');
+    }
+
+    if (fileName) {
+      const imagePath = path.join(process.cwd(), 'uploads', 'logo', aboutExists.image);
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
     }
 
     await this.prisma.about.update({
@@ -71,17 +98,17 @@ export class AboutService {
         id: aboutExists.id,
       },
       data: {
-        name_uz: updateAboutDto.name_uz ?? aboutExists.name_uz,
-        name_ru: updateAboutDto.name_ru ?? aboutExists.name_ru,
-        name_en: updateAboutDto.name_en ?? aboutExists.name_en,
-        title_uz: updateAboutDto.title_uz ?? aboutExists.title_uz,
-        title_ru: updateAboutDto.title_ru ?? aboutExists.title_ru,
-        title_en: updateAboutDto.title_en ?? aboutExists.title_en,
+        name_uz: data.name_uz ?? aboutExists.name_uz,
+        name_ru: data.name_ru ?? aboutExists.name_ru,
+        name_en: data.name_en ?? aboutExists.name_en,
+        title_uz: data.title_uz ?? aboutExists.title_uz,
+        title_ru: data.title_ru ?? aboutExists.title_ru,
+        title_en: data.title_en ?? aboutExists.title_en,
         image: fileName ?? aboutExists.image,
-        phone_number: updateAboutDto.phone_number ?? aboutExists.phone_number,
-        address_uz: updateAboutDto.address_uz ?? aboutExists.address_uz,
-        address_ru: updateAboutDto.address_ru ?? aboutExists.address_ru,
-        address_en: updateAboutDto.address_en ?? aboutExists.address_en,
+        phone_number: data.phone_number ?? aboutExists.phone_number,
+        address_uz: data.address_uz ?? aboutExists.address_uz,
+        address_ru: data.address_ru ?? aboutExists.address_ru,
+        address_en: data.address_en ?? aboutExists.address_en,
       },
     });
 
@@ -107,25 +134,12 @@ export class AboutService {
   }
 
   // --- CONTACT SERVICE METHODS ---
-  async createContact(data: CreateContactDto) {
-    await this.prisma.contact.create({
-      data: {
-        title_uz: data.title_uz,
-        title_ru: data.title_ru,
-        title_en: data.title_en,
-        phone_number: data.phone_number,
-      },
-    });
-    return 'Контакт успешно создан!';
-  }
 
   async findAllContacts(lang: string) {
     const contacts = await this.prisma.contact.findMany({
       select: {
         id: true,
-        title_uz: true,
-        title_ru: true,
-        title_en: true,
+        [`title_${lang}`]: true,
         phone_number: true,
         created_at: true,
       },
@@ -143,9 +157,7 @@ export class AboutService {
       where: { id },
       select: {
         id: true,
-        title_uz: true,
-        title_ru: true,
-        title_en: true,
+        [`title_${lang}`]: true,
         phone_number: true,
         created_at: true,
       },
@@ -157,6 +169,48 @@ export class AboutService {
       phone_number: contact.phone_number,
       created_at: contact.created_at,
     };
+  }
+
+  async findAllContactsAdmin() {
+    const contacts = await this.prisma.contact.findMany({
+      select: {
+        id: true,
+        title_uz: true,
+        title_ru: true,
+        title_en: true,
+        phone_number: true,
+        created_at: true,
+      },
+    });
+    return contacts;
+  }
+
+  async findOneContactAdmin(id: number) {
+    const contact = await this.prisma.contact.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title_uz: true,
+        title_ru: true,
+        title_en: true,
+        phone_number: true,
+        created_at: true,
+      },
+    });
+    if (!contact) throw new NotFoundException('Контакт не найден!');
+    return contact;
+  }
+
+  async createContact(data: CreateContactDto) {
+    await this.prisma.contact.create({
+      data: {
+        title_uz: data.title_uz,
+        title_ru: data.title_ru,
+        title_en: data.title_en,
+        phone_number: data.phone_number,
+      },
+    });
+    return 'Контакт успешно создан!';
   }
 
   async updateContact(id: number, data: UpdateContactDto) {
