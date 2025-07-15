@@ -1,14 +1,14 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateAboutDto, UpdateAboutDto, CreateContactDto, UpdateContactDto } from './dto';
 import { PrismaService } from '@prisma';
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class AboutService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async find() {
+  async find(lang: string) {
     const about = await this.prisma.about.findFirst({
       select: {
         name_uz: true,
@@ -26,10 +26,21 @@ export class AboutService {
       },
     });
 
-    return about;
+    return {
+      name: about[`name_${lang}`],
+      title: about[`title_${lang}`],
+      image: about?.image,
+      phone_number: about?.phone_number,
+      address: about[`address_${lang}`],
+    };
   }
 
-  async create(data: CreateAboutDto, file: Express.Multer.File) {
+  async create(data: CreateAboutDto, fileName: string) {
+    const about = await this.prisma.about.findFirst();
+    if (about) {
+      throw new BadRequestException('Информация уже существует можно обновить!');
+    }
+
     await this.prisma.about.create({
       data: {
         name_uz: data.name_uz,
@@ -38,7 +49,7 @@ export class AboutService {
         title_uz: data.title_uz,
         title_ru: data.title_ru,
         title_en: data.title_en,
-        image: file?.path,
+        image: fileName,
         phone_number: data.phone_number,
         address_uz: data.address_uz,
         address_ru: data.address_ru,
@@ -49,7 +60,7 @@ export class AboutService {
     return 'About успешно создан!';
   }
 
-  async update(updateAboutDto: UpdateAboutDto, file: Express.Multer.File) {
+  async update(updateAboutDto: UpdateAboutDto, fileName: string) {
     const aboutExists = await this.prisma.about.findFirst();
     if (!aboutExists) {
       throw new NotFoundException('');
@@ -66,7 +77,7 @@ export class AboutService {
         title_uz: updateAboutDto.title_uz ?? aboutExists.title_uz,
         title_ru: updateAboutDto.title_ru ?? aboutExists.title_ru,
         title_en: updateAboutDto.title_en ?? aboutExists.title_en,
-        image: file?.path ?? aboutExists.image,
+        image: fileName ?? aboutExists.image,
         phone_number: updateAboutDto.phone_number ?? aboutExists.phone_number,
         address_uz: updateAboutDto.address_uz ?? aboutExists.address_uz,
         address_ru: updateAboutDto.address_ru ?? aboutExists.address_ru,
@@ -77,16 +88,21 @@ export class AboutService {
     return 'About успешно обновлен!';
   }
 
-  async remove(id: number) {
-    const about = await this.prisma.about.findUnique({ where: { id } });
-    if (!about) throw new NotFoundException('About not found!');
+  async remove() {
+    const about = await this.prisma.about.findFirst();
+    if (!about) throw new NotFoundException('Информация не найдена!');
     if (about.image) {
-      const imagePath = path.join(__dirname, '..', '..', '..', 'uploads', 'logo', about.image);
+      const imagePath = path.join(process.cwd(), 'uploads', 'logo', about.image);
+
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }
     }
-    await this.prisma.about.delete({ where: { id } });
+    await this.prisma.about.delete({
+      where: {
+        id: about.id,
+      },
+    });
     return 'About успешно удален!';
   }
 
@@ -103,8 +119,8 @@ export class AboutService {
     return 'Контакт успешно создан!';
   }
 
-  async findAllContacts() {
-    return this.prisma.contact.findMany({
+  async findAllContacts(lang: string) {
+    const contacts = await this.prisma.contact.findMany({
       select: {
         id: true,
         title_uz: true,
@@ -114,9 +130,15 @@ export class AboutService {
         created_at: true,
       },
     });
+    return contacts.map((contact) => ({
+      id: contact.id,
+      title: contact[`title_${lang}`],
+      phone_number: contact.phone_number,
+      created_at: contact.created_at,
+    }));
   }
 
-  async findOneContact(id: number) {
+  async findOneContact(id: number, lang: string) {
     const contact = await this.prisma.contact.findUnique({
       where: { id },
       select: {
@@ -129,7 +151,12 @@ export class AboutService {
       },
     });
     if (!contact) throw new NotFoundException('Контакт не найден!');
-    return contact;
+    return {
+      id: contact.id,
+      title: contact[`title_${lang}`],
+      phone_number: contact.phone_number,
+      created_at: contact.created_at,
+    };
   }
 
   async updateContact(id: number, data: UpdateContactDto) {

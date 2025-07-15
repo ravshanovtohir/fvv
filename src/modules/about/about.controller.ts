@@ -1,20 +1,25 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { AboutService } from './about.service';
 import { CreateAboutDto, UpdateAboutDto, CreateContactDto, UpdateContactDto } from './dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
-import { CreateCategoryDto } from '../category/dto';
+import { HeadersValidation } from '@decorators';
+import { DeviceHeadersDto } from '@enums';
 
 @ApiTags('About')
 @Controller('about')
 export class AboutController {
   constructor(private readonly aboutService: AboutService) {}
   // --- ABOUT ENDPOINTS ---
+  @ApiOperation({
+    summary: 'Mobile uchun',
+    description: 'Only for mobile.',
+  })
   @Get()
-  async find() {
-    return this.aboutService.find();
+  async find(@HeadersValidation() headers: DeviceHeadersDto) {
+    return this.aboutService.find(headers.lang);
   }
 
   @Post()
@@ -33,10 +38,10 @@ export class AboutController {
     }),
   )
   async create(@Body() createAboutDto: CreateAboutDto, @UploadedFile() file: Express.Multer.File) {
-    return this.aboutService.create(createAboutDto, file);
+    return this.aboutService.create(createAboutDto, file.filename);
   }
 
-  @Patch(':id')
+  @Patch()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateAboutDto })
   @UseInterceptors(
@@ -52,12 +57,12 @@ export class AboutController {
     }),
   )
   async update(@Body() updateAboutDto: UpdateAboutDto, @UploadedFile() file: Express.Multer.File) {
-    return this.aboutService.update(updateAboutDto, file);
+    return this.aboutService.update(updateAboutDto, file.filename);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.aboutService.remove(+id);
+  @Delete()
+  remove() {
+    return this.aboutService.remove();
   }
 
   // --- CONTACT ENDPOINTS ---
@@ -67,13 +72,13 @@ export class AboutController {
   }
 
   @Get('contact')
-  findAllContacts() {
-    return this.aboutService.findAllContacts();
+  findAllContacts(@HeadersValidation() headers: DeviceHeadersDto) {
+    return this.aboutService.findAllContacts(headers.lang);
   }
 
   @Get('contact/:id')
-  findOneContact(@Param('id') id: string) {
-    return this.aboutService.findOneContact(+id);
+  findOneContact(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.aboutService.findOneContact(+id, headers.lang);
   }
 
   @Patch('contact/:id')

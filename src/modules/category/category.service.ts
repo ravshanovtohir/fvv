@@ -69,7 +69,7 @@ export class CategoryService {
     return categories;
   }
 
-  async create(data: CreateCategoryDto, file: Express.Multer.File) {
+  async create(data: CreateCategoryDto, fileName: string) {
     const categoryExists = await this.prisma.category.findFirst({
       where: {
         type: data.type,
@@ -91,14 +91,14 @@ export class CategoryService {
         title_uz: data.title_uz,
         title_ru: data.title_ru,
         title_en: data.title_en,
-        icon: file.path,
+        icon: fileName,
       },
     });
 
     return 'Категория успешно создана!';
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto, file: Express.Multer.File) {
+  async update(id: number, updateCategoryDto: UpdateCategoryDto, fileName: string) {
     const categoryExists = await this.prisma.category.findFirst({
       where: {
         id: id,
@@ -130,7 +130,7 @@ export class CategoryService {
         title_uz: updateCategoryDto.title_uz ?? categoryExists.title_uz,
         title_ru: updateCategoryDto.title_ru ?? categoryExists.title_ru,
         title_en: updateCategoryDto.title_en ?? categoryExists.title_en,
-        icon: file?.path ?? categoryExists.icon,
+        icon: fileName ?? categoryExists.icon,
       },
     });
 

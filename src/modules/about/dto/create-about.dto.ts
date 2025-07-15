@@ -30,7 +30,7 @@ export class CreateAboutDto {
   @IsString()
   title_en?: string;
 
-  @ApiPropertyOptional({ description: 'Rasm', example: 'about.png' })
+  @ApiPropertyOptional({ description: 'Rasm', example: 'about.png', format: 'binary' })
   @IsOptional()
   @IsString()
   image?: string;

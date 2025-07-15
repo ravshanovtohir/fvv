@@ -52,7 +52,7 @@ export class CategoryController {
     }),
   )
   async create(@Body() data: CreateCategoryDto, @UploadedFile() file: Express.Multer.File) {
-    return this.categoryService.create(data, file);
+    return this.categoryService.create(data, file.filename);
   }
 
   @Patch(':id')
@@ -71,7 +71,7 @@ export class CategoryController {
     }),
   )
   update(@Param() param: ParamId, @Body() data: UpdateCategoryDto, @UploadedFile() file: Express.Multer.File) {
-    return this.categoryService.update(param.id, data, file);
+    return this.categoryService.update(param.id, data, file.filename);
   }
 
   @Delete(':id')
