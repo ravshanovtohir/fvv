@@ -2,49 +2,62 @@ import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nest
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto, UpdateNotificationDto } from './dto';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiProperty } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@guards';
+import { JwtAuthGuard, RolesGuard } from '@guards';
 import { IRequest } from '@interfaces';
+import { Roles } from '@decorators';
+import { UserRoles } from '@enums';
 
 @ApiTags('Notification')
 @Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
-  @Post()
   @ApiOperation({ summary: 'Notification jo‘natish (barchaga, tanlanganlarga yoki bitta userga)' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post()
   @ApiBody({ type: CreateNotificationDto })
-  create(@Body() dto: CreateNotificationDto) {
+  async create(@Body() dto: CreateNotificationDto) {
     return this.notificationService.create(dto);
   }
 
-  @Get()
   @ApiOperation({ summary: 'Barcha notificationlarni olish' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get()
   findAll() {
     return this.notificationService.findAll();
   }
 
-  @Get(':id')
   @ApiOperation({ summary: 'Notificationni ID orqali olish' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.notificationService.findOne(+id);
   }
 
   @ApiProperty({ name: 'get static notification for mobile', description: 'get static notification for mobile' })
+  @ApiOperation({ summary: 'Static notificationlarni olish (barchaga yuborilganlar)' })
+  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard)
   @Get('static')
-  @ApiOperation({ summary: 'Static notificationlarni olish (barchaga yuborilganlar)' })
   async staticAll(@Req() request: IRequest) {
     return await this.notificationService.getStaticNotification(request.user.id);
   }
 
-  @Get('static/all')
   @ApiOperation({ summary: 'Statik notificationlarni olish (barchaga yuborilganlar)' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('static/all')
   getStaticAll() {
     return this.notificationService.getStaticAll();
   }
 
-  @Get('static/user/:userId')
   @ApiOperation({ summary: 'Foydalanuvchiga yuborilgan notificationlarni olish' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('static/user/:userId')
   getUserNotifications(@Param('userId') userId: string) {
     return this.notificationService.getUserNotifications(+userId);
   }

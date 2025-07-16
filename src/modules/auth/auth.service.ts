@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '@prisma';
-import { UpdateFcmTokenDto } from './dto';
+import { LoginMobileDto, RegisterDto, UpdateFcmTokenDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { UserRoles } from '@enums';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,60 @@ export class AuthService {
     }
     const payload = {
       id: staff.id,
+      role: UserRoles.ADMIN,
+    };
+
+    const access_token = await this.jwtService.signAsync(payload);
+    return {
+      access_token,
+    };
+  }
+
+  async register(data: RegisterDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        phone_number: data.phone_number,
+      },
+    });
+
+    if (user) {
+      throw new BadRequestException('Этот номер уже зарегистрирован!');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    await this.prisma.user.create({
+      data: {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        middle_name: data.middle_name,
+        phone_number: data.phone_number,
+        password: hashedPassword,
+      },
+    });
+
+    return 'Регистрация прошла успешно!';
+  }
+
+  async loginMobile(data: LoginMobileDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        phone_number: data.phone_number,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Юзер не найден!');
+    }
+
+    const isMatch = await bcrypt.compare(data.password, user.password);
+    if (!isMatch) {
+      throw new UnauthorizedException('Неверный пароль!');
+    }
+
+    const payload = {
+      id: user.id,
+      role: UserRoles.USER,
     };
 
     const access_token = await this.jwtService.signAsync(payload);
@@ -42,7 +97,9 @@ export class AuthService {
       },
       select: {
         id: true,
-        name: true,
+        first_name: true,
+        last_name: true,
+        middle_name: true,
         phone_number: true,
       },
     });

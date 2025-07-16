@@ -9,45 +9,57 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, UpdateCategoryDto, GetCategoryDto } from './dto';
-import { DeviceHeadersDto, ParamId } from '@enums';
+import { DeviceHeadersDto, ParamId, UserRoles } from '@enums';
 import { v4 as uuidv4 } from 'uuid';
 import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
-import { HeadersValidation } from '@decorators';
+import { HeadersValidation, Roles } from '@decorators';
+import { JwtAuthGuard, RolesGuard } from '@guards';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiOperation({ summary: 'Find all categories mobile', description: 'Find all categories mobile' })
+  @Roles([UserRoles.USER])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async findAllPublic(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findAllPublic(headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
+  @Roles([UserRoles.USER])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOnePublic(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findOnePublic(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find all categories admin', description: 'Find all categories admin' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin')
   async findAll(@Query() query: GetCategoryDto) {
     return this.categoryService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Find one category admin', description: 'Find one category admin' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin/:id')
-  findOne(@Param() param: ParamId) {
+  async findOne(@Param() param: ParamId) {
     return this.categoryService.findOne(param.id);
   }
 
   @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('category-type')
   async getCategoryByType() {
     return this.categoryService.getCategoryByType();
@@ -74,6 +86,8 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Update category admin', description: 'Update category admin' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateCategoryDto })
@@ -89,13 +103,15 @@ export class CategoryController {
       }),
     }),
   )
-  update(@Param() param: ParamId, @Body() data: UpdateCategoryDto, @UploadedFile() file: Express.Multer.File) {
+  async update(@Param() param: ParamId, @Body() data: UpdateCategoryDto, @UploadedFile() file: Express.Multer.File) {
     return this.categoryService.update(param.id, data, file.filename);
   }
 
   @ApiOperation({ summary: 'Delete category admin', description: 'Delete category admin' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
-  remove(@Param() param: ParamId) {
+  async remove(@Param() param: ParamId) {
     return this.categoryService.remove(param.id);
   }
 }

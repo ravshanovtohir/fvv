@@ -62,6 +62,8 @@ async function bootstrap() {
       type: 'http',
       scheme: 'bearer',
       bearerFormat: 'JWT',
+      name: 'access-token',
+      description: 'JWT access token',
     })
     .addGlobalParameters(...globalHeaderParametrs)
     .build();

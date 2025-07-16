@@ -1,12 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFile,
+  UseGuards,
+} from '@nestjs/common';
 import { AboutService } from './about.service';
 import { CreateAboutDto, UpdateAboutDto, CreateContactDto, UpdateContactDto } from './dto';
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
-import { HeadersValidation } from '@decorators';
-import { DeviceHeadersDto, ParamId } from '@enums';
+import { HeadersValidation, Roles } from '@decorators';
+import { DeviceHeadersDto, ParamId, UserRoles } from '@enums';
+import { JwtAuthGuard, RolesGuard } from '@guards';
 
 @ApiTags('About')
 @Controller('about')
@@ -17,6 +29,8 @@ export class AboutController {
     summary: 'Mobile uchun',
     description: 'Only for mobile.',
   })
+  @Roles([UserRoles.USER])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   async find(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.find(headers.lang);
@@ -26,6 +40,8 @@ export class AboutController {
     summary: 'Adminka uchun',
     description: 'Only for admin panel.',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin')
   async findAdmin() {
     return this.aboutService.findAdmin();
@@ -35,6 +51,8 @@ export class AboutController {
     summary: 'Create',
     description: 'Create about',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateAboutDto })
@@ -58,6 +76,8 @@ export class AboutController {
     summary: 'Update',
     description: 'Update about',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateAboutDto })
@@ -81,6 +101,8 @@ export class AboutController {
     summary: 'Delete',
     description: 'Delete about',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete()
   async remove() {
     return this.aboutService.remove();
@@ -92,6 +114,8 @@ export class AboutController {
     summary: 'Find one contact',
     description: 'Find one contact',
   })
+  @Roles([UserRoles.USER])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('contact/:id')
   async findOneContact(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.findOneContact(+id, headers.lang);
@@ -101,6 +125,8 @@ export class AboutController {
     summary: 'Find all contacts',
     description: 'Find all contacts',
   })
+  @Roles([UserRoles.USER])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('contact')
   findAllContacts(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.findAllContacts(headers.lang);
@@ -110,6 +136,8 @@ export class AboutController {
     summary: 'Find all contacts admin',
     description: 'Find all contacts admin',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin/contacts')
   async findAllContactsAdmin() {
     return this.aboutService.findAllContactsAdmin();
@@ -119,6 +147,8 @@ export class AboutController {
     summary: 'Find one contact admin',
     description: 'Find one contact admin',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('admin/contacts/:id')
   async findOneContactAdmin(@Param('id') id: string) {
     return this.aboutService.findOneContactAdmin(Number(id));
@@ -128,6 +158,8 @@ export class AboutController {
     summary: 'Create contact',
     description: 'Create contact',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('contact')
   createContact(@Body() createContactDto: CreateContactDto) {
     return this.aboutService.createContact(createContactDto);
@@ -137,6 +169,8 @@ export class AboutController {
     summary: 'Update contact',
     description: 'Update contact',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch('contact/:id')
   updateContact(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
     return this.aboutService.updateContact(+id, updateContactDto);
@@ -146,6 +180,8 @@ export class AboutController {
     summary: 'Delete contact',
     description: 'Delete contact',
   })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete('contact/:id')
   removeContact(@Param('id') id: string) {
     return this.aboutService.removeContact(+id);

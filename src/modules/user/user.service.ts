@@ -1,37 +1,29 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { FindUserDto, UpdateUserDto } from './dto';
 import { PrismaService } from '@prisma';
+import * as bcrypt from 'bcrypt';
+import { paginate } from '@helpers';
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateUserDto) {
-    const exists = await this.prisma.user.findFirst({
-      where: { phone_number: data.phone_number },
-    });
-    if (exists) {
-      throw new BadRequestException('Пользователь с таким номером уже существует!');
-    }
-    await this.prisma.user.create({
-      data: {
-        name: data.name,
-        login: data.phone_number,
-        phone_number: data.phone_number,
-      },
-    });
-    return 'Пользователь успешно создан!';
-  }
-
-  async findAll() {
-    return this.prisma.user.findMany({
+  async findAll(query: FindUserDto) {
+    const user = await paginate('user', {
+      page: query.page,
+      size: query.size,
+      sort: query.sort,
+      filter: query.filters,
       select: {
         id: true,
-        name: true,
-        login: true,
+        first_name: true,
+        last_name: true,
+        middle_name: true,
         phone_number: true,
       },
     });
+
+    return user;
   }
 
   async findOne(id: number) {
@@ -39,8 +31,9 @@ export class UserService {
       where: { id },
       select: {
         id: true,
-        name: true,
-        login: true,
+        first_name: true,
+        last_name: true,
+        middle_name: true,
         phone_number: true,
       },
     });
@@ -55,23 +48,21 @@ export class UserService {
     if (!user) {
       throw new NotFoundException('Пользователь не найден!');
     }
+
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 10);
+    }
+
     await this.prisma.user.update({
       where: { id },
       data: {
-        name: data.name ?? user.name,
-        login: data.login ?? user.login,
+        first_name: data.first_name ?? user.first_name,
+        last_name: data.last_name ?? user.last_name,
+        middle_name: data.middle_name ?? user.middle_name,
         phone_number: data.phone_number ?? user.phone_number,
+        password: data.password ?? user.password,
       },
     });
     return 'Пользователь успешно обновлен!';
-  }
-
-  async remove(id: number) {
-    const user = await this.prisma.user.findUnique({ where: { id } });
-    if (!user) {
-      throw new NotFoundException('Пользователь не найден!');
-    }
-    await this.prisma.user.delete({ where: { id } });
-    return 'Пользователь успешно удален!';
   }
 }

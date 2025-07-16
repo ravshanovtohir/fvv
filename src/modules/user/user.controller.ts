@@ -1,33 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { FindUserDto } from './dto';
+import { ApiOperation } from '@nestjs/swagger';
+import { Roles } from '@decorators';
+import { UserRoles } from '@enums';
+import { JwtAuthGuard, RolesGuard } from '@guards';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  async create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
+  @ApiOperation({ summary: 'Find all users admin panel', description: 'Find all users admin panel' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
-  async findAll() {
-    return this.userService.findAll();
+  async findAll(@Query() query: FindUserDto) {
+    return this.userService.findAll(query);
   }
 
+  @ApiOperation({ summary: 'Find one user admin panel', description: 'Find one user admin panel' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  async remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
   }
 }
