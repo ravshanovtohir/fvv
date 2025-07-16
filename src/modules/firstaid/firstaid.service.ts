@@ -2,6 +2,8 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { CreateFirstaidDto, UpdateFirstaidDto, GetFirstaidDto } from './dto';
 import { PrismaService } from '@prisma';
 import { paginate } from '@helpers';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class FirstaidService {
@@ -115,7 +117,7 @@ export class FirstaidService {
     };
   }
 
-  async create(data: CreateFirstaidDto) {
+  async create(data: CreateFirstaidDto, fileName: string) {
     const exists = await this.prisma.firstAid.findFirst({
       where: {
         OR: [
@@ -153,12 +155,13 @@ export class FirstaidService {
         description_ru: data.description_ru,
         description_en: data.description_en,
         category_id: data.category_id,
+        image: fileName,
       },
     });
     return 'Первая помощь успешно создана!';
   }
 
-  async update(id: number, data: UpdateFirstaidDto) {
+  async update(id: number, data: UpdateFirstaidDto, fileName: string) {
     const firstaid = await this.prisma.firstAid.findUnique({
       where: {
         id: id,
@@ -198,6 +201,13 @@ export class FirstaidService {
       }
     }
 
+    if (fileName) {
+      const imagePath = path.join(process.cwd(), 'uploads', 'firstaid_images', firstaid.image);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
     await this.prisma.firstAid.update({
       where: { id },
       data: {
@@ -208,6 +218,7 @@ export class FirstaidService {
         description_ru: data.description_ru ?? firstaid.description_ru,
         description_en: data.description_en ?? firstaid.description_en,
         category_id: data.category_id ?? firstaid.category_id,
+        image: fileName ?? firstaid.image,
       },
     });
     return 'Первая помощь успешно обновлена!';

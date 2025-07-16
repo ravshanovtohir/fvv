@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -74,6 +75,9 @@ export class CategoryController {
       storage: diskStorage({
         destination: './uploads/category_icons',
         filename: (req, file, cb) => {
+          if (!file) {
+            throw new BadRequestException('Требуется изображение!');
+          }
           const name = file.originalname.replace(/\s+/g, '');
           const uniqueName = uuidv4() + '-' + name;
           cb(null, uniqueName);

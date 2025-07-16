@@ -2,6 +2,8 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { CreateEncyclopediaDto, UpdateEncyclopediaDto, GetEncyclopediaDto } from './dto';
 import { PrismaService } from '@prisma';
 import { paginate } from '@helpers';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class EncyclopediaService {
@@ -100,7 +102,7 @@ export class EncyclopediaService {
     return encyclopedia;
   }
 
-  async create(data: CreateEncyclopediaDto) {
+  async create(data: CreateEncyclopediaDto, image: string) {
     const exists = await this.prisma.encyclopedia.findFirst({
       where: {
         OR: [{ title_uz: data.title_uz }, { title_ru: data.title_ru }, { title_en: data.title_en }],
@@ -128,12 +130,13 @@ export class EncyclopediaService {
         description_ru: data.description_ru,
         description_en: data.description_en,
         category_id: data.category_id,
+        image: image,
       },
     });
     return 'Энциклопедия успешно создана!';
   }
 
-  async update(id: number, data: UpdateEncyclopediaDto) {
+  async update(id: number, data: UpdateEncyclopediaDto, fileName: string) {
     const encyclopedia = await this.prisma.encyclopedia.findUnique({ where: { id } });
     if (!encyclopedia) {
       throw new NotFoundException('Энциклопедия не найдена!');
@@ -165,6 +168,14 @@ export class EncyclopediaService {
       }
     }
 
+    if (fileName) {
+      const imagePath = path.join(process.cwd(), 'uploads', 'encyclopedia_images', encyclopedia.image);
+
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
     await this.prisma.encyclopedia.update({
       where: { id },
       data: {
@@ -175,6 +186,7 @@ export class EncyclopediaService {
         description_ru: data.description_ru ?? encyclopedia.description_ru,
         description_en: data.description_en ?? encyclopedia.description_en,
         category_id: data.category_id ?? encyclopedia.category_id,
+        image: fileName ?? encyclopedia.image,
       },
     });
     return 'Энциклопедия успешно обновлена!';

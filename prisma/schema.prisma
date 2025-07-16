@@ -48,6 +48,7 @@ model Encyclopedia {
   description_ru String
   description_en String
   category_id    Int
+  image          String?
   category       Category @relation(fields: [category_id], references: [id])
 
   created_at DateTime  @default(now())
@@ -76,13 +77,14 @@ model Dictionary {
 }
 
 model FirstAid {
-  id             Int    @id @default(autoincrement())
+  id             Int     @id @default(autoincrement())
   title_uz       String
   title_ru       String
   title_en       String
   description_uz String
   description_ru String
   description_en String
+  image          String?
 
   category_id Int
   category    Category @relation(fields: [category_id], references: [id])

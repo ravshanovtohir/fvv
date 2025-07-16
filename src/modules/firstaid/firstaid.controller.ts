@@ -1,10 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { FirstaidService } from './firstaid.service';
 import { CreateFirstaidDto, UpdateFirstaidDto, GetFirstaidDto } from './dto';
 import { HeadersValidation, Roles } from '@decorators';
 import { DeviceHeadersDto, UserRoles } from '@enums';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard, RolesGuard } from '@guards';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('firstaid')
 export class FirstaidController {
@@ -46,16 +61,48 @@ export class FirstaidController {
   @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
-  async create(@Body() createFirstaidDto: CreateFirstaidDto) {
-    return this.firstaidService.create(createFirstaidDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateFirstaidDto })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/firstaid_images',
+        filename: (req, file, cb) => {
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  async create(@Body() createFirstaidDto: CreateFirstaidDto, @UploadedFile() file: Express.Multer.File) {
+    return this.firstaidService.create(createFirstaidDto, file.filename);
   }
 
   @ApiOperation({ summary: 'Update firstaid', description: 'Update firstaid' })
   @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateFirstaidDto: UpdateFirstaidDto) {
-    return this.firstaidService.update(+id, updateFirstaidDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateFirstaidDto })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/firstaid_images',
+        filename: (req, file, cb) => {
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  async update(
+    @Param('id') id: string,
+    @Body() updateFirstaidDto: UpdateFirstaidDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.firstaidService.update(+id, updateFirstaidDto, file.filename);
   }
 
   @ApiOperation({ summary: 'Delete firstaid', description: 'Delete firstaid' })

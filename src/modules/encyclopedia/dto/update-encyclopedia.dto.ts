@@ -36,4 +36,12 @@ export class UpdateEncyclopediaDto {
   @IsOptional()
   @IsInt()
   category_id?: number;
+
+  @ApiPropertyOptional({
+    description: 'Image',
+    example: 'https://example.com/image.jpg',
+    required: true,
+    format: 'binary',
+  })
+  image: string;
 }

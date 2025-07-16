@@ -1,10 +1,26 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  BadRequestException,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import { EncyclopediaService } from './encyclopedia.service';
 import { CreateEncyclopediaDto, UpdateEncyclopediaDto, GetEncyclopediaDto } from './dto';
 import { HeadersValidation, Roles } from '@decorators';
 import { DeviceHeadersDto, UserRoles } from '@enums';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard, RolesGuard } from '@guards';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('encyclopedia')
 export class EncyclopediaController {
@@ -44,16 +60,51 @@ export class EncyclopediaController {
 
   @ApiOperation({ summary: 'Create encyclopedia', description: 'Create encyclopedia' })
   @Post()
-  async create(@Body() createEncyclopediaDto: CreateEncyclopediaDto) {
-    return this.encyclopediaService.create(createEncyclopediaDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateEncyclopediaDto })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/encyclopedia_images',
+        filename: (req, file, cb) => {
+          if (!file) {
+            throw new BadRequestException('Требуется изображение!');
+          }
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  async create(@Body() createEncyclopediaDto: CreateEncyclopediaDto, @UploadedFile() file: Express.Multer.File) {
+    return this.encyclopediaService.create(createEncyclopediaDto, file.filename);
   }
 
   @ApiOperation({ summary: 'Update encyclopedia', description: 'Update encyclopedia' })
   @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateEncyclopediaDto: UpdateEncyclopediaDto) {
-    return this.encyclopediaService.update(+id, updateEncyclopediaDto);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: UpdateEncyclopediaDto })
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads/encyclopedia_images',
+        filename: (req, file, cb) => {
+          const name = file.originalname.replace(/\s+/g, '');
+          const uniqueName = uuidv4() + '-' + name;
+          cb(null, uniqueName);
+        },
+      }),
+    }),
+  )
+  async update(
+    @Param('id') id: string,
+    @Body() updateEncyclopediaDto: UpdateEncyclopediaDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.encyclopediaService.update(+id, updateEncyclopediaDto, file.filename);
   }
 
   @ApiOperation({ summary: 'Delete encyclopedia', description: 'Delete encyclopedia' })
