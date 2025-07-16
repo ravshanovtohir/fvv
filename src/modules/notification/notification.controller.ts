@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { CreateNotificationDto, UpdateNotificationDto } from './dto';
-import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiProperty } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@guards';
+import { IRequest } from '@interfaces';
 
 @ApiTags('Notification')
 @Controller('notification')
@@ -25,6 +27,14 @@ export class NotificationController {
   @ApiOperation({ summary: 'Notificationni ID orqali olish' })
   findOne(@Param('id') id: string) {
     return this.notificationService.findOne(+id);
+  }
+
+  @ApiProperty({ name: 'get static notification for mobile', description: 'get static notification for mobile' })
+  @UseGuards(JwtAuthGuard)
+  @Get('static')
+  @ApiOperation({ summary: 'Static notificationlarni olish (barchaga yuborilganlar)' })
+  async staticAll(@Req() request: IRequest) {
+    return await this.notificationService.getStaticNotification(request.user.id);
   }
 
   @Get('static/all')

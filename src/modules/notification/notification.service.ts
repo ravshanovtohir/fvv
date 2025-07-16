@@ -79,6 +79,26 @@ export class NotificationService {
     });
   }
 
+  async getStaticNotification(userId: number) {
+    const notifications = await this.prisma.notificationUser.findMany({
+      where: {
+        user_id: userId,
+      },
+      select: {
+        notification: {
+          select: {
+            id: true,
+            title: true,
+            message: true,
+          },
+        },
+      },
+      orderBy: { id: 'desc' },
+    });
+
+    return notifications;
+  }
+
   async getUserNotifications(userId: number) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('Пользователь не найден!');
