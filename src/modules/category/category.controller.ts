@@ -58,8 +58,8 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
-  @Roles([UserRoles.USER, UserRoles.ADMIN])
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER, UserRoles.ADMIN])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   @Get('category-type')
   async getCategoryByType() {
     return this.categoryService.getCategoryByType();

@@ -73,6 +73,7 @@ export class AboutService {
         address_uz: data.address_uz,
         address_ru: data.address_ru,
         address_en: data.address_en,
+        email: data.email,
       },
     });
 
@@ -109,6 +110,7 @@ export class AboutService {
         address_uz: data.address_uz ?? aboutExists.address_uz,
         address_ru: data.address_ru ?? aboutExists.address_ru,
         address_en: data.address_en ?? aboutExists.address_en,
+        email: data.email ?? aboutExists.email,
       },
     });
 

@@ -21,4 +21,28 @@ export class UpdateContactDto {
   @IsOptional()
   @IsString()
   phone_number?: string;
+
+  @ApiPropertyOptional({ description: 'Email', example: 'info@example.com ' })
+  @IsOptional()
+  @IsString()
+  email?: string;
+
+  @ApiPropertyOptional({ description: 'Manzil (uz)', example: 'Toshkent' })
+  @IsOptional()
+  @IsString()
+  address_uz?: string;
+
+  @ApiPropertyOptional({ description: 'Manzil (ru)', example: 'Ташкент' })
+  @IsOptional()
+  @IsString()
+  address_ru?: string;
+
+  @ApiPropertyOptional({ description: 'Manzil (en)', example: 'Tashkent' })
+  @IsOptional()
+  @IsString()
+  address_en?: string;
+
+  @ApiPropertyOptional({ description: 'Rasm', example: 'about.png', format: 'binary' })
+  @IsOptional()
+  image?: string;
 }

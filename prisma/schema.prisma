@@ -142,6 +142,7 @@ model About {
   title_en     String?
   image        String?
   phone_number String?
+  email        String?
   address_uz   String?
   address_ru   String?
   address_en   String?

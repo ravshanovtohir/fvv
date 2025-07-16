@@ -56,4 +56,9 @@ export class UpdateAboutDto {
   @IsOptional()
   @IsString()
   address_en?: string;
+
+  @ApiPropertyOptional({ description: 'Email', example: 'info@example.com ' })
+  @IsOptional()
+  @IsString()
+  email?: string;
 }

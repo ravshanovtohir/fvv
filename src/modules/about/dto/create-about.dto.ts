@@ -39,6 +39,10 @@ export class CreateAboutDto {
   @IsString()
   phone_number: string;
 
+  @ApiProperty({ description: 'Email', example: 'info@example.com ', required: true })
+  @IsString()
+  email: string;
+
   @ApiPropertyOptional({ description: 'Manzil (uz)', example: 'Toshkent' })
   @IsOptional()
   @IsString()
