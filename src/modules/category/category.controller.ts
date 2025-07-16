@@ -27,46 +27,48 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiOperation({ summary: 'Find all categories mobile', description: 'Find all categories mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get()
   async findAllPublic(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findAllPublic(headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get(':id')
   async findOnePublic(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findOnePublic(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find all categories admin', description: 'Find all categories admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin')
   async findAll(@Query() query: GetCategoryDto) {
     return this.categoryService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Find one category admin', description: 'Find one category admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/:id')
   async findOne(@Param() param: ParamId) {
     return this.categoryService.findOne(param.id);
   }
 
   @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
-  // @Roles([UserRoles.USER, UserRoles.ADMIN])
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER, UserRoles.ADMIN])
   @Get('category-type')
   async getCategoryByType() {
     return this.categoryService.getCategoryByType();
   }
 
   @ApiOperation({ summary: 'Create category admin', description: 'Create category admin' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateCategoryDto })
@@ -90,8 +92,8 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Update category admin', description: 'Update category admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateCategoryDto })
@@ -112,8 +114,8 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Delete category admin', description: 'Delete category admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Delete(':id')
   async remove(@Param() param: ParamId) {
     return this.categoryService.remove(param.id);

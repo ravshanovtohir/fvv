@@ -13,8 +13,8 @@ export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}
 
   @ApiOperation({ summary: 'Notification jo‘natish (barchaga, tanlanganlarga yoki bitta userga)' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Post()
   @ApiBody({ type: CreateNotificationDto })
   async create(@Body() dto: CreateNotificationDto) {
@@ -22,16 +22,16 @@ export class NotificationController {
   }
 
   @ApiOperation({ summary: 'Barcha notificationlarni olish' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get()
   findAll() {
     return this.notificationService.findAll();
   }
 
   @ApiOperation({ summary: 'Notificationni ID orqali olish' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.notificationService.findOne(+id);
@@ -39,8 +39,8 @@ export class NotificationController {
 
   @ApiProperty({ name: 'get static notification for mobile', description: 'get static notification for mobile' })
   @ApiOperation({ summary: 'Static notificationlarni olish (barchaga yuborilganlar)' })
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles([UserRoles.ADMIN])
-  @UseGuards(JwtAuthGuard)
   @Get('static')
   async staticAll(@Req() request: IRequest) {
     return await this.notificationService.getStaticNotification(request.user.id);
@@ -55,8 +55,8 @@ export class NotificationController {
   }
 
   @ApiOperation({ summary: 'Foydalanuvchiga yuborilgan notificationlarni olish' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('static/user/:userId')
   getUserNotifications(@Param('userId') userId: string) {
     return this.notificationService.getUserNotifications(+userId);

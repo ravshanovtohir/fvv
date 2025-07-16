@@ -29,8 +29,8 @@ export class AboutController {
     summary: 'Mobile uchun',
     description: 'Only for mobile.',
   })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get()
   async find(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.find(headers.lang);
@@ -40,8 +40,8 @@ export class AboutController {
     summary: 'Adminka uchun',
     description: 'Only for admin panel.',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin')
   async findAdmin() {
     return this.aboutService.findAdmin();
@@ -51,18 +51,17 @@ export class AboutController {
     summary: 'Create',
     description: 'Create about',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateAboutDto })
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './uploads/logo',
+        destination: './uploads/about',
         filename: (req, file, cb) => {
-          const name = file.originalname.replace(/\s+/g, '');
-          const uniqueName = uuidv4() + '-' + name;
+          const uniqueName = uuidv4() + '-' + file.originalname;
           cb(null, uniqueName);
         },
       }),
@@ -76,8 +75,8 @@ export class AboutController {
     summary: 'Update',
     description: 'Update about',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Patch()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateAboutDto })
@@ -101,8 +100,8 @@ export class AboutController {
     summary: 'Delete',
     description: 'Delete about',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Delete()
   async remove() {
     return this.aboutService.remove();
@@ -114,8 +113,8 @@ export class AboutController {
     summary: 'Find one contact',
     description: 'Find one contact',
   })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get('contact/:id')
   async findOneContact(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.findOneContact(+id, headers.lang);
@@ -125,8 +124,8 @@ export class AboutController {
     summary: 'Find all contacts',
     description: 'Find all contacts',
   })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get('contact')
   findAllContacts(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.findAllContacts(headers.lang);
@@ -136,8 +135,8 @@ export class AboutController {
     summary: 'Find all contacts admin',
     description: 'Find all contacts admin',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/contacts')
   async findAllContactsAdmin() {
     return this.aboutService.findAllContactsAdmin();
@@ -147,8 +146,8 @@ export class AboutController {
     summary: 'Find one contact admin',
     description: 'Find one contact admin',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/contacts/:id')
   async findOneContactAdmin(@Param('id') id: string) {
     return this.aboutService.findOneContactAdmin(Number(id));
@@ -158,8 +157,8 @@ export class AboutController {
     summary: 'Create contact',
     description: 'Create contact',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Post('contact')
   createContact(@Body() createContactDto: CreateContactDto) {
     return this.aboutService.createContact(createContactDto);
@@ -169,8 +168,8 @@ export class AboutController {
     summary: 'Update contact',
     description: 'Update contact',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Patch('contact/:id')
   updateContact(@Param('id') id: string, @Body() updateContactDto: UpdateContactDto) {
     return this.aboutService.updateContact(+id, updateContactDto);
@@ -180,8 +179,8 @@ export class AboutController {
     summary: 'Delete contact',
     description: 'Delete contact',
   })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Delete('contact/:id')
   removeContact(@Param('id') id: string) {
     return this.aboutService.removeContact(+id);

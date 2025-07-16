@@ -27,38 +27,40 @@ export class EncyclopediaController {
   constructor(private readonly encyclopediaService: EncyclopediaService) {}
 
   @ApiOperation({ summary: 'Find all encyclopedias mobile', description: 'Find all encyclopedias mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get()
   async findAll(@Query() query: GetEncyclopediaDto, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.encyclopediaService.findAll(query, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one encyclopedia mobile', description: 'Find one encyclopedia mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get(':id')
   async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.encyclopediaService.findOne(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find all encyclopedias admin', description: 'Find all encyclopedias admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/encyclopedia')
   async findAllAdmin(@Query() query: GetEncyclopediaDto) {
     return this.encyclopediaService.findAllAdmin(query);
   }
 
   @ApiOperation({ summary: 'Find one encyclopedia admin', description: 'Find one encyclopedia admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/encyclopedia/:id')
   async findOneAdmin(@Param('id') id: string) {
     return this.encyclopediaService.findOneAdmin(+id);
   }
 
   @ApiOperation({ summary: 'Create encyclopedia', description: 'Create encyclopedia' })
+  @Roles([UserRoles.ADMIN])
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateEncyclopediaDto })
@@ -82,8 +84,8 @@ export class EncyclopediaController {
   }
 
   @ApiOperation({ summary: 'Update encyclopedia', description: 'Update encyclopedia' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateEncyclopediaDto })
@@ -108,8 +110,8 @@ export class EncyclopediaController {
   }
 
   @ApiOperation({ summary: 'Delete encyclopedia', description: 'Delete encyclopedia' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.encyclopediaService.remove(+id);

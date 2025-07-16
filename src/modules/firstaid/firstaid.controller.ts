@@ -26,40 +26,40 @@ export class FirstaidController {
   constructor(private readonly firstaidService: FirstaidService) {}
 
   @ApiOperation({ summary: 'Find all firstaids mobile', description: 'Find all firstaids mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get()
   async findAll(@Query() query: GetFirstaidDto, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.firstaidService.findAll(query, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one firstaid mobile', description: 'Find one firstaid mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get(':id')
   async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.firstaidService.findOne(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find all firstaids admin', description: 'Find all firstaids admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/firstaid')
   async findAllAdmin(@Query() query: GetFirstaidDto) {
     return this.firstaidService.findAllAdmin(query);
   }
 
   @ApiOperation({ summary: 'Find one firstaid admin', description: 'Find one firstaid admin' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('admin/firstaid/:id')
   async findOneAdmin(@Param('id') id: string) {
     return this.firstaidService.findOneAdmin(+id);
   }
 
   @ApiOperation({ summary: 'Create firstaid', description: 'Create firstaid' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateFirstaidDto })
@@ -80,8 +80,8 @@ export class FirstaidController {
   }
 
   @ApiOperation({ summary: 'Update firstaid', description: 'Update firstaid' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateFirstaidDto })
@@ -106,8 +106,8 @@ export class FirstaidController {
   }
 
   @ApiOperation({ summary: 'Delete firstaid', description: 'Delete firstaid' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.firstaidService.remove(+id);

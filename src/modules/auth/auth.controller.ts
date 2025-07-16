@@ -30,24 +30,24 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'get me user mobile', description: 'get me user for mobile' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   @Get('me-user')
   async getMeUser(@Req() request: IRequest) {
     return await this.authService.getMeUser(request.user.id);
   }
 
   @ApiOperation({ summary: 'get me user admin panel', description: 'get me user for admin panel' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('me-admin')
   async getMeAdmin(@Req() request: IRequest) {
     return await this.authService.getMeStaff(request.user.id);
   }
 
   @ApiOperation({ summary: 'update fcm token', description: 'update fcm token' })
-  @Roles([UserRoles.USER])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.USER])
   async updateFcmToken(@Req() request: IRequest, @Body() data: UpdateFcmTokenDto) {
     return await this.authService.updateFcmToken(request.user.id, data);
   }

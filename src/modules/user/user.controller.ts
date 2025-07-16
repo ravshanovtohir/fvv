@@ -11,16 +11,16 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ summary: 'Find all users admin panel', description: 'Find all users admin panel' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get()
   async findAll(@Query() query: FindUserDto) {
     return this.userService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Find one user admin panel', description: 'Find one user admin panel' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.userService.findOne(+id);
