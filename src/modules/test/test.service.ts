@@ -98,13 +98,32 @@ export class TestService {
   }
 
   async create(data: CreateTestDto) {
-    // category_id va true_answer tekshirish
-    const category = await this.prisma.category.findUnique({ where: { id: data.category_id } });
-    if (!category) throw new NotFoundException('Kategoriya topilmadi!');
+    const category = await this.prisma.category.findUnique({
+      where: {
+        id: data.category_id,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!category) {
+      throw new NotFoundException('Категория не найдена!');
+    }
+
+    if (data.answers_uz.length < 3) {
+      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
+    }
+    if (data.answers_ru.length < 3) {
+      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
+    }
+    if (data.answers_en.length < 3) {
+      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
+    }
+
     const keys = ['answers_uz', 'answers_ru', 'answers_en'];
     for (const k of keys) {
       if (!data[k].some((a: any) => a.key === data.true_answer)) {
-        throw new BadRequestException(`true_answer key ${data.true_answer} ${k} variantlarida yo'q!`);
+        throw new BadRequestException(`Ключ правильного ответа ${data.true_answer} отсутствует в вариантах ${k}!`);
       }
     }
     await this.prisma.test.create({
@@ -119,7 +138,7 @@ export class TestService {
         category_id: data.category_id,
       },
     });
-    return 'Test muvaffaqiyatli yaratildi!';
+    return 'Тест успешно создан!';
   }
 
   async update(id: number, data: UpdateTestDto) {

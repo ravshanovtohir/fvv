@@ -22,14 +22,4 @@ export class CreateNotificationDto {
   @IsNotEmpty()
   @IsString()
   type: string;
-
-  @ApiProperty({ description: 'Qaysi userlarga yuboriladi', enum: NotificationSendType, required: true })
-  @IsNotEmpty()
-  @IsEnum(NotificationSendType)
-  send_to: NotificationSendType;
-
-  @ApiPropertyOptional({ description: 'User IDlar (faqat selected yoki one uchun)', example: [1, 2, 3] })
-  @IsOptional()
-  @IsArray()
-  user_ids?: number[];
 }

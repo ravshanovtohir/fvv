@@ -1,29 +1,42 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '@prisma';
 import { CreateNotificationDto, NotificationSendType } from './dto';
+import { firebaseApp, admin } from '@helpers';
 
 @Injectable()
 export class NotificationService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateNotificationDto) {
-    let userIds: number[] = [];
-    if (dto.send_to === NotificationSendType.ALL) {
-      const users = await this.prisma.user.findMany({ select: { id: true } });
-      userIds = users.map((u) => u.id);
-      if (userIds.length === 0) throw new NotFoundException('Нет пользователей для отправки!');
-    } else if (dto.send_to === NotificationSendType.SELECTED) {
-      if (!dto.user_ids || dto.user_ids.length === 0)
-        throw new BadRequestException('user_ids обязательно для selected!');
-      userIds = dto.user_ids;
-    } else if (dto.send_to === NotificationSendType.ONE) {
-      if (!dto.user_ids || dto.user_ids.length !== 1)
-        throw new BadRequestException('user_ids должен содержать ровно один элемент для one!');
-      userIds = dto.user_ids;
+    // Always send to all users
+    const users = await this.prisma.user.findMany({ select: { id: true, fcm_token: true } });
+    const userIds = users.map((u) => u.id);
+    if (userIds.length === 0) throw new NotFoundException('Нет пользователей для отправки!');
+
+    // Firebase push notification
+    if (firebaseApp) {
+      for (const user of users) {
+        if (user.fcm_token) {
+          try {
+            await admin.messaging().send({
+              token: user.fcm_token,
+              notification: {
+                title: dto.title,
+                body: dto.message,
+              },
+              data: {
+                type: dto.type,
+              },
+            });
+          } catch (err) {
+            console.warn(`FCM push failed for user ${user.id}:`, err?.message || err);
+          }
+        }
+      }
+    } else {
+      console.warn('Firebase is not initialized, push notifications are skipped.');
     }
-    const foundUsers = await this.prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true } });
-    if (foundUsers.length !== userIds.length)
-      throw new NotFoundException('Один или несколько пользователей не найдены!');
+
     const notification = await this.prisma.notification.create({
       data: {
         title: dto.title,

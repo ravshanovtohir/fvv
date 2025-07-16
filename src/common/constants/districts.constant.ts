@@ -333,7 +333,7 @@ export const DISTRICTS = [
     regionId: 13,
     name_uz: 'ZARBDOR TUMANI',
     name_ru: 'ЗАРБДОР ТУМАНИ',
-    name_en: 'ZARBODOR DISTRICT',
+    name_en: 'ZARBDOR DISTRICT',
   },
   {
     id: 1302,
@@ -431,7 +431,7 @@ export const DISTRICTS = [
     regionId: 14,
     name_uz: 'NUROBOD TUMANI',
     name_ru: 'НУРОБОД ТУМАНИ',
-    name_en: 'NUBOOD DISTRICT',
+    name_en: 'NUROBOD DISTRICT',
   },
   {
     id: 1403,
