@@ -19,6 +19,7 @@ export class EncyclopediaService {
         id: true,
         [`title_${lang}`]: true,
         [`description_${lang}`]: true,
+        image: true,
         category_id: true,
         created_at: true,
       },
@@ -29,6 +30,7 @@ export class EncyclopediaService {
         id: encyclopedia.id,
         title: encyclopedia[`title_${lang}`],
         description: encyclopedia[`description_${lang}`],
+        image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
         category_id: encyclopedia.category_id,
         created_at: encyclopedia.created_at,
       })),
@@ -42,6 +44,7 @@ export class EncyclopediaService {
         id: true,
         [`title_${lang}`]: true,
         [`description_${lang}`]: true,
+        image: true,
         category_id: true,
         created_at: true,
       },
@@ -53,6 +56,7 @@ export class EncyclopediaService {
       id: encyclopedia.id,
       title: encyclopedia[`title_${lang}`],
       description: encyclopedia[`description_${lang}`],
+      image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
       category_id: encyclopedia.category_id,
       created_at: encyclopedia.created_at,
     };
@@ -69,6 +73,7 @@ export class EncyclopediaService {
         title_uz: true,
         title_ru: true,
         title_en: true,
+        image: true,
         description_uz: true,
         description_ru: true,
         description_en: true,
@@ -76,7 +81,13 @@ export class EncyclopediaService {
         created_at: true,
       },
     });
-    return encyclopedias;
+    return {
+      ...encyclopedias,
+      data: encyclopedias.data.map((encyclopedia) => ({
+        ...encyclopedia,
+        image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
+      })),
+    };
   }
 
   async findOneAdmin(id: number) {
@@ -89,6 +100,7 @@ export class EncyclopediaService {
         title_uz: true,
         title_ru: true,
         title_en: true,
+        image: true,
         description_uz: true,
         description_ru: true,
         description_en: true,
@@ -99,7 +111,10 @@ export class EncyclopediaService {
     if (!encyclopedia) {
       throw new NotFoundException('Энциклопедия не найдена!');
     }
-    return encyclopedia;
+    return {
+      ...encyclopedia,
+      image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
+    };
   }
 
   async create(data: CreateEncyclopediaDto, image: string) {
