@@ -17,7 +17,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuidv4 } from 'uuid';
 import { HeadersValidation, Roles } from '@decorators';
-import { DeviceHeadersDto, ParamId, UserRoles } from '@enums';
+import { DeviceHeadersDto, UserRoles } from '@enums';
 import { JwtAuthGuard, RolesGuard } from '@guards';
 
 @ApiTags('About')

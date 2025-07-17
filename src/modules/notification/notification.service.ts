@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@prisma';
-import { CreateNotificationDto, NotificationSendType } from './dto';
+import { CreateNotificationDto } from './dto';
 import { firebaseApp, admin } from '@helpers';
 
 @Injectable()
@@ -67,7 +67,7 @@ export class NotificationService {
   }
 
   async getStaticAll() {
-    const userCount = await this.prisma.user.count();
+    // const userCount = await this.prisma.user.count();
     return this.prisma.notification.findMany({
       where: {
         users: {

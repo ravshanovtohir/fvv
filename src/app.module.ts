@@ -9,13 +9,14 @@ import {
   UserModule,
   TestModule,
   StaffModule,
+  AboutModule,
   CategoryModule,
+  LocationModule,
   FirstaidModule,
   DictionaryModule,
   EncyclopediaModule,
-  AboutModule,
+  NotificationModule,
 } from '@modules';
-import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { NotificationModule } from './modules/notification/notification.module';
     EncyclopediaModule,
     AboutModule,
     NotificationModule,
+    LocationModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],

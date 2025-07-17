@@ -1,8 +1,9 @@
-import { DISTRICTS, REGIONS } from '@constants';
+import { DISTRICTS, REGIONS } from './../../common/constants/index';
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 const prisma = new PrismaClient();
 
-async function seed() {
+async function seedRegionAndDistrict() {
   try {
     await prisma.$transaction([
       ...REGIONS.map((region) =>
@@ -28,9 +29,25 @@ async function seed() {
       ),
     ]);
   } catch (error) {
+    console.log(error);
     process.exit(1);
   }
 }
-// '\МИРЗАЧ�167Л ТУМАНИ'
 
-// seed();
+const seedAdmin = async () => {
+  try {
+    await prisma.staff.create({
+      data: {
+        full_name: 'Adminov Admin Adminovich',
+        login: 'admin',
+        password: await bcrypt.hash('admin123', 10),
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+// seedRegionAndDistrict();
+// seedAdmin();

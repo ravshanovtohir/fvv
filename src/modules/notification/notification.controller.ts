@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { CreateNotificationDto, UpdateNotificationDto } from './dto';
-import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiProperty } from '@nestjs/swagger';
+import { CreateNotificationDto } from './dto';
+import { ApiTags, ApiOperation, ApiBody, ApiProperty } from '@nestjs/swagger';
 import { JwtAuthGuard, RolesGuard } from '@guards';
 import { IRequest } from '@interfaces';
 import { Roles } from '@decorators';

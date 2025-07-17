@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Logger } from '@nestjs/common';
 import { Response } from 'express';
-import { IRequest } from '@interfaces';
+// import { IRequest } from '@interfaces';
 
 @Catch(HttpException)
 export class AllExceptionFilter implements ExceptionFilter {
@@ -8,7 +8,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const request = ctx.getRequest<IRequest>();
+    // const request = ctx.getRequest<IRequest>();
     this.logger.error(exception);
     const response = ctx.getResponse<Response>();
     let status = exception?.getStatus() ?? 500;
