@@ -5,17 +5,18 @@ import { WinstonLoggerService } from '@logger';
 import { LoggingInterceptor } from '@interceptors';
 import { PrismaModule } from '@prisma';
 import {
-  AuthModule,
+  MapModule,
   UserModule,
+  AuthModule,
   TestModule,
-  StaffModule,
   AboutModule,
+  StaffModule,
   CategoryModule,
-  LocationModule,
   FirstaidModule,
+  LocationModule,
   DictionaryModule,
-  EncyclopediaModule,
   NotificationModule,
+  EncyclopediaModule,
 } from '@modules';
 
 @Module({
@@ -36,6 +37,7 @@ import {
     AboutModule,
     NotificationModule,
     LocationModule,
+    MapModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],
