@@ -42,6 +42,14 @@ export class CategoryController {
     return this.categoryService.findAll(query);
   }
 
+  @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER, UserRoles.ADMIN])
+  @Get('category-type')
+  async getCategoryByType() {
+    return this.categoryService.getCategoryByType();
+  }
+
   @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
   // @UseGuards(JwtAuthGuard, RolesGuard)
   // @Roles([UserRoles.USER])
@@ -56,14 +64,6 @@ export class CategoryController {
   @Get('admin/:id')
   async findOne(@Param() param: ParamId) {
     return this.categoryService.findOne(param.id);
-  }
-
-  @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles([UserRoles.USER, UserRoles.ADMIN])
-  @Get('category-type')
-  async getCategoryByType() {
-    return this.categoryService.getCategoryByType();
   }
 
   @ApiOperation({ summary: 'Create category admin', description: 'Create category admin' })
