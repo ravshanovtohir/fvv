@@ -27,16 +27,16 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @ApiOperation({ summary: 'Find all categories mobile', description: 'Find all categories mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get()
   async findAllPublic(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findAllPublic(headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get(':id')
   async findOnePublic(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.categoryService.findOnePublic(+id, headers.lang);
@@ -59,8 +59,8 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Get category by type', description: 'Get category by type' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER, UserRoles.ADMIN])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER, UserRoles.ADMIN])
   @Get('category-type')
   async getCategoryByType() {
     return this.categoryService.getCategoryByType();

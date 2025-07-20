@@ -27,16 +27,16 @@ export class EncyclopediaController {
   constructor(private readonly encyclopediaService: EncyclopediaService) {}
 
   @ApiOperation({ summary: 'Find all encyclopedias mobile', description: 'Find all encyclopedias mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get()
   async findAll(@Query() query: GetEncyclopediaDto, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.encyclopediaService.findAll(query, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one encyclopedia mobile', description: 'Find one encyclopedia mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get(':id')
   async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.encyclopediaService.findOne(+id, headers.lang);

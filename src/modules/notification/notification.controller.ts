@@ -39,16 +39,16 @@ export class NotificationController {
 
   @ApiProperty({ name: 'get static notification for mobile', description: 'get static notification for mobile' })
   @ApiOperation({ summary: 'Static notificationlarni olish (barchaga yuborilganlar)' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.ADMIN])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.ADMIN])
   @Get('static')
   async staticAll(@Req() request: IRequest) {
     return await this.notificationService.getStaticNotification(request.user.id);
   }
 
   @ApiOperation({ summary: 'Statik notificationlarni olish (barchaga yuborilganlar)' })
-  @Roles([UserRoles.ADMIN])
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles([UserRoles.ADMIN])
   @Get('static/all')
   getStaticAll() {
     return this.notificationService.getStaticAll();

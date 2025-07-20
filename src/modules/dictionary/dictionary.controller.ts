@@ -11,16 +11,16 @@ export class DictionaryController {
   constructor(private readonly dictionaryService: DictionaryService) {}
 
   @ApiOperation({ summary: 'Find all dictionaries mobile', description: 'Find all dictionaries mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get()
   async findAll(@Query() query: GetDictionaryDto, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.dictionaryService.findAll(query, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one dictionary mobile', description: 'Find one dictionary mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get(':id')
   async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.dictionaryService.findOne(+id, headers.lang);

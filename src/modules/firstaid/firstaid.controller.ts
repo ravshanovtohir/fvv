@@ -26,16 +26,16 @@ export class FirstaidController {
   constructor(private readonly firstaidService: FirstaidService) {}
 
   @ApiOperation({ summary: 'Find all firstaids mobile', description: 'Find all firstaids mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get()
   async findAll(@Query() query: GetFirstaidDto, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.firstaidService.findAll(query, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one firstaid mobile', description: 'Find one firstaid mobile' })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get(':id')
   async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
     return this.firstaidService.findOne(+id, headers.lang);
