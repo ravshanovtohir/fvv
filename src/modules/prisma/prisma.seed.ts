@@ -49,5 +49,5 @@ const seedAdmin = async () => {
   }
 };
 
-// seedRegionAndDistrict();
-// seedAdmin();
+seedRegionAndDistrict();
+seedAdmin();
