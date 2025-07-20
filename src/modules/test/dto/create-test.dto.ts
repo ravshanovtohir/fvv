@@ -31,7 +31,7 @@ export class CreateTestDto {
   })
   @IsNotEmpty()
   @IsArray()
-  @IsObject({ each: true })
+  // @IsObject({ each: true })
   answers_uz: Array<{ key: string; value: string }>;
 
   @ApiProperty({
@@ -48,7 +48,7 @@ export class CreateTestDto {
   })
   @IsNotEmpty()
   @IsArray()
-  @IsObject({ each: true })
+  // @IsObject({ each: true })
   answers_ru: Array<{ key: string; value: string }>;
 
   @ApiProperty({
@@ -65,7 +65,7 @@ export class CreateTestDto {
   })
   @IsNotEmpty()
   @IsArray()
-  @IsObject({ each: true })
+  // @IsObject({ each: true })
   answers_en: Array<{ key: string; value: string }>;
 
   @ApiProperty({ description: 'To‘g‘ri javob kaliti (masalan, A)', example: 'A', required: true, type: String })

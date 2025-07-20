@@ -107,6 +107,7 @@ model Category {
   FirstAid         FirstAid[]
   Test             Test[]
   userTestSessions UserTestSession[]
+  map              Map[]
 
   created_at DateTime  @default(now())
   updated_at DateTime?
@@ -122,7 +123,7 @@ model Test {
   answers_uz      Json
   answers_ru      Json
   answers_en      Json
-  true_answer     String
+  true_answer     Int
   userTestAnswers UserTestAnswer[]
 
   category_id Int
@@ -255,4 +256,16 @@ model District {
   updated_at DateTime?
 
   @@map("district")
+}
+
+model Map {
+  id          Int      @id @default(autoincrement())
+  category_id Int
+  coordinates Json?
+  category    Category @relation(fields: [category_id], references: [id])
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("map")
 }
