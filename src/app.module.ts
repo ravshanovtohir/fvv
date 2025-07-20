@@ -18,12 +18,28 @@ import {
   NotificationModule,
   EncyclopediaModule,
 } from '@modules';
+import { join } from 'path';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       validate,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'logs'),
+      serveRoot: '/logs',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     AuthModule,
     UserModule,
