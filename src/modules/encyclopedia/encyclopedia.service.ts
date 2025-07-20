@@ -26,13 +26,13 @@ export class EncyclopediaService {
     });
     return {
       ...encyclopedias,
-      data: encyclopedias.data.map((encyclopedia) => ({
-        id: encyclopedia.id,
-        title: encyclopedia[`title_${lang}`],
-        description: encyclopedia[`description_${lang}`],
-        image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
-        category_id: encyclopedia.category_id,
-        created_at: encyclopedia.created_at,
+      data: encyclopedias?.data?.map((encyclopedia) => ({
+        id: encyclopedia?.id,
+        title: encyclopedia?.[`title_${lang}`],
+        description: encyclopedia?.[`description_${lang}`],
+        image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+        category_id: encyclopedia?.category_id,
+        created_at: encyclopedia?.created_at,
       })),
     };
   }
@@ -53,12 +53,12 @@ export class EncyclopediaService {
       throw new NotFoundException('Энциклопедия не найдена!');
     }
     return {
-      id: encyclopedia.id,
-      title: encyclopedia[`title_${lang}`],
-      description: encyclopedia[`description_${lang}`],
-      image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
-      category_id: encyclopedia.category_id,
-      created_at: encyclopedia.created_at,
+      id: encyclopedia?.id,
+      title: encyclopedia?.[`title_${lang}`],
+      description: encyclopedia?.[`description_${lang}`],
+      image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+      category_id: encyclopedia?.category_id,
+      created_at: encyclopedia?.created_at,
     };
   }
 
@@ -83,9 +83,9 @@ export class EncyclopediaService {
     });
     return {
       ...encyclopedias,
-      data: encyclopedias.data.map((encyclopedia) => ({
+      data: encyclopedias?.data?.map((encyclopedia) => ({
         ...encyclopedia,
-        image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
+        image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
       })),
     };
   }
@@ -113,7 +113,7 @@ export class EncyclopediaService {
     }
     return {
       ...encyclopedia,
-      image: `$/uploads/encyclopedia_images/${encyclopedia.image}`,
+      image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
     };
   }
 

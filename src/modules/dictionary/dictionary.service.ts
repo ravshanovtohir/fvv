@@ -25,13 +25,13 @@ export class DictionaryService {
 
     return {
       ...dictionaries,
-      data: dictionaries.data.map((dictionary) => ({
-        id: dictionary.id,
-        prefix: dictionary.prefix,
-        title: dictionary[`title_${lang}`],
-        description: dictionary[`description_${lang}`],
-        category_id: dictionary.category_id,
-        created_at: dictionary.created_at,
+      data: dictionaries?.data?.map((dictionary) => ({
+        id: dictionary?.id,
+        prefix: dictionary?.prefix,
+        title: dictionary?.[`title_${lang}`],
+        description: dictionary?.[`description_${lang}`],
+        category_id: dictionary?.category_id,
+        created_at: dictionary?.created_at,
       })),
     };
   }
@@ -54,12 +54,12 @@ export class DictionaryService {
       throw new NotFoundException('Слово не найдено!');
     }
     return {
-      id: dictionary.id,
-      prefix: dictionary.prefix,
-      title: dictionary[`title_${lang}`],
-      description: dictionary[`description_${lang}`],
-      category_id: dictionary.category_id,
-      created_at: dictionary.created_at,
+      id: dictionary?.id,
+      prefix: dictionary?.prefix,
+      title: dictionary?.[`title_${lang}`],
+      description: dictionary?.[`description_${lang}`],
+      category_id: dictionary?.category_id,
+      created_at: dictionary?.created_at,
     };
   }
 

@@ -49,7 +49,7 @@ export class LocationService {
 
     return regions.map((region) => ({
       ...region,
-      name: region[`name_${lang}`],
+      name: region?.[`name_${lang}`],
     }));
   }
 
@@ -67,7 +67,7 @@ export class LocationService {
 
     return districts.map((district) => ({
       ...district,
-      name: district[`name_${lang}`],
+      name: district?.[`name_${lang}`],
     }));
   }
 

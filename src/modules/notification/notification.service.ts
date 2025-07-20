@@ -21,11 +21,11 @@ export class NotificationService {
             await admin.messaging().send({
               token: user.fcm_token,
               notification: {
-                title: dto.title,
-                body: dto.message,
+                title: dto?.title,
+                body: dto?.message,
               },
               data: {
-                type: dto.type,
+                type: dto?.type,
               },
             });
           } catch (err) {
@@ -39,9 +39,9 @@ export class NotificationService {
 
     const notification = await this.prisma.notification.create({
       data: {
-        title: dto.title,
-        message: dto.message,
-        type: dto.type,
+        title: dto?.title,
+        message: dto?.message,
+        type: dto?.type,
         users: {
           create: userIds.map((user_id) => ({ user: { connect: { id: user_id } } })),
         },

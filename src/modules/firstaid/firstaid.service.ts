@@ -26,13 +26,13 @@ export class FirstaidService {
     });
     return {
       ...firstaids,
-      data: firstaids.data.map((firstaid) => ({
-        id: firstaid.id,
-        title: firstaid[`title_${lang}`],
-        description: firstaid[`description_${lang}`],
+      data: firstaids?.data?.map((firstaid) => ({
+        id: firstaid?.id,
+        title: firstaid?.[`title_${lang}`],
+        description: firstaid?.[`description_${lang}`],
         image: `$/uploads/firstaid_images/${firstaid.image}`,
-        category_id: firstaid.category_id,
-        created_at: firstaid.created_at,
+        category_id: firstaid?.category_id,
+        created_at: firstaid?.created_at,
       })),
     };
   }
@@ -53,12 +53,12 @@ export class FirstaidService {
       throw new NotFoundException('Первая помощь не найдена!');
     }
     return {
-      id: firstaid.id,
-      title: firstaid[`title_${lang}`],
-      description: firstaid[`description_${lang}`],
+      id: firstaid?.id,
+      title: firstaid?.[`title_${lang}`],
+      description: firstaid?.[`description_${lang}`],
       image: `$/uploads/firstaid_images/${firstaid.image}`,
-      category_id: firstaid.category_id,
-      created_at: firstaid.created_at,
+      category_id: firstaid?.category_id,
+      created_at: firstaid?.created_at,
     };
   }
 
@@ -83,13 +83,13 @@ export class FirstaidService {
     });
     return {
       ...firstaids,
-      data: firstaids.data.map((firstaid) => ({
-        id: firstaid.id,
-        title: firstaid.title_uz,
-        description: firstaid.description_uz,
-        image: `$/uploads/firstaid_images/${firstaid.image}`,
-        category_id: firstaid.category_id,
-        created_at: firstaid.created_at,
+      data: firstaids?.data?.map((firstaid) => ({
+        id: firstaid?.id,
+        title: firstaid?.title_uz,
+        description: firstaid?.description_uz,
+        image: `$/uploads/firstaid_images/${firstaid?.image}`,
+        category_id: firstaid?.category_id,
+        created_at: firstaid?.created_at,
       })),
     };
   }
@@ -116,12 +116,12 @@ export class FirstaidService {
     }
 
     return {
-      id: firstaid.id,
-      title: firstaid.title_uz,
-      description: firstaid.description_uz,
+      id: firstaid?.id,
+      title: firstaid?.title_uz,
+      description: firstaid?.description_uz,
       image: `$/uploads/firstaid_images/${firstaid.image}`,
-      category_id: firstaid.category_id,
-      created_at: firstaid.created_at,
+      category_id: firstaid?.category_id,
+      created_at: firstaid?.created_at,
     };
   }
 

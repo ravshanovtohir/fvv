@@ -22,11 +22,11 @@ export class AboutService {
     });
 
     return {
-      name: about[`name_${lang}`],
-      title: about[`title_${lang}`],
-      image: `${FilePath.LOGO}/${about?.image}`,
+      name: about?.[`name_${lang}`],
+      title: about?.[`title_${lang}`],
+      image: `${FilePath?.LOGO}/${about?.image}`,
       phone_number: about?.phone_number,
-      address: about[`address_${lang}`],
+      address: about?.[`address_${lang}`],
     };
   }
 
@@ -50,7 +50,7 @@ export class AboutService {
 
     return {
       ...about,
-      image: `${FilePath.LOGO}/${about?.image}`,
+      image: `${FilePath?.LOGO}/${about?.image}`,
     };
   }
 
@@ -148,7 +148,7 @@ export class AboutService {
     });
     return contacts.map((contact) => ({
       id: contact.id,
-      title: contact[`title_${lang}`],
+      title: contact?.[`title_${lang}`],
       phone_number: contact.phone_number,
       created_at: contact.created_at,
     }));
@@ -166,10 +166,10 @@ export class AboutService {
     });
     if (!contact) throw new NotFoundException('Контакт не найден!');
     return {
-      id: contact.id,
-      title: contact[`title_${lang}`],
-      phone_number: contact.phone_number,
-      created_at: contact.created_at,
+      id: contact?.id,
+      title: contact?.[`title_${lang}`],
+      phone_number: contact?.phone_number,
+      created_at: contact?.created_at,
     };
   }
 

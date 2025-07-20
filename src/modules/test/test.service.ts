@@ -23,12 +23,12 @@ export class TestService {
     });
     return {
       ...tests,
-      data: tests.data.map((test) => ({
-        id: test.id,
-        question: test[`question_${lang}`],
-        answers: test[`answers_${lang}`],
-        true_answer: test.true_answer,
-        created_at: test.created_at,
+      data: tests?.data?.map((test) => ({
+        id: test?.id,
+        question: test?.[`question_${lang}`],
+        answers: test?.[`answers_${lang}`],
+        true_answer: test?.true_answer,
+        created_at: test?.created_at,
       })),
     };
   }
@@ -48,11 +48,11 @@ export class TestService {
       throw new NotFoundException('Тест не найден!');
     }
     return {
-      id: test.id,
-      question: test[`question_${lang}`],
-      answers: test[`answers_${lang}`],
-      true_answer: test.true_answer,
-      created_at: test.created_at,
+      id: test?.id,
+      question: test?.[`question_${lang}`],
+      answers: test?.[`answers_${lang}`],
+      true_answer: test?.true_answer,
+      created_at: test?.created_at,
     };
   }
 

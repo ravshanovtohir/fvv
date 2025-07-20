@@ -32,10 +32,10 @@ export class CategoryService {
 
     return {
       ...categories,
-      data: categories.data.map((category) => ({
+      data: categories?.data?.map((category) => ({
         ...category,
-        type: CategoryType[category?.type],
-        image: `${FilePath.CATEGORY_ICON}/${category?.icon}`,
+        type: CategoryType?.[category?.type],
+        image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
       })),
     };
   }
@@ -58,8 +58,8 @@ export class CategoryService {
 
     return {
       ...category,
-      type: CategoryType[category.type],
-      image: `${FilePath.CATEGORY_ICON}/${category.icon}`,
+      type: CategoryType?.[category?.type],
+      image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
     };
   }
 
@@ -84,9 +84,9 @@ export class CategoryService {
 
     return categories.map((category) => ({
       id: category?.id,
-      type: CategoryType[+category?.type],
-      title: category[`title_${lang}`],
-      image: `${FilePath.CATEGORY_ICON}/${category?.icon}`,
+      type: CategoryType?.[+category?.type],
+      title: category?.[`title_${lang}`],
+      image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
       created_at: category?.created_at,
     }));
   }
@@ -106,8 +106,8 @@ export class CategoryService {
     return {
       id: category?.id,
       title: category?.[`title_${lang}`],
-      type: CategoryType[+category?.type],
-      image: `${FilePath.CATEGORY_ICON}/${category?.icon}`,
+      type: CategoryType?.[+category?.type],
+      image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
       created_at: category?.created_at,
     };
   }
