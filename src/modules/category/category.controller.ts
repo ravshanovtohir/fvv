@@ -34,20 +34,20 @@ export class CategoryController {
     return this.categoryService.findAllPublic(headers.lang);
   }
 
-  @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles([UserRoles.USER])
-  @Get(':id')
-  async findOnePublic(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
-    return this.categoryService.findOnePublic(+id, headers.lang);
-  }
-
   @ApiOperation({ summary: 'Find all categories admin', description: 'Find all categories admin' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles([UserRoles.ADMIN])
   @Get('admin')
   async findAll(@Query() query: GetCategoryDto) {
     return this.categoryService.findAll(query);
+  }
+
+  @ApiOperation({ summary: 'Find one category mobile', description: 'Find one category mobile' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
+  @Get(':id')
+  async findOnePublic(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.categoryService.findOnePublic(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one category admin', description: 'Find one category admin' })
