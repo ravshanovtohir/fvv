@@ -34,20 +34,20 @@ export class EncyclopediaController {
     return this.encyclopediaService.findAll(query, headers.lang);
   }
 
-  @ApiOperation({ summary: 'Find one encyclopedia mobile', description: 'Find one encyclopedia mobile' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles([UserRoles.USER])
-  @Get(':id')
-  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
-    return this.encyclopediaService.findOne(+id, headers.lang);
-  }
-
   @ApiOperation({ summary: 'Find all encyclopedias admin', description: 'Find all encyclopedias admin' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles([UserRoles.ADMIN])
   @Get('admin/encyclopedia')
   async findAllAdmin(@Query() query: GetEncyclopediaDto) {
     return this.encyclopediaService.findAllAdmin(query);
+  }
+
+  @ApiOperation({ summary: 'Find one encyclopedia mobile', description: 'Find one encyclopedia mobile' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
+  @Get(':id')
+  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.encyclopediaService.findOne(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one encyclopedia admin', description: 'Find one encyclopedia admin' })

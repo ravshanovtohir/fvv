@@ -33,20 +33,20 @@ export class FirstaidController {
     return this.firstaidService.findAll(query, headers.lang);
   }
 
-  @ApiOperation({ summary: 'Find one firstaid mobile', description: 'Find one firstaid mobile' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles([UserRoles.USER])
-  @Get(':id')
-  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
-    return this.firstaidService.findOne(+id, headers.lang);
-  }
-
   @ApiOperation({ summary: 'Find all firstaids admin', description: 'Find all firstaids admin' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles([UserRoles.ADMIN])
   @Get('admin/firstaid')
   async findAllAdmin(@Query() query: GetFirstaidDto) {
     return this.firstaidService.findAllAdmin(query);
+  }
+
+  @ApiOperation({ summary: 'Find one firstaid mobile', description: 'Find one firstaid mobile' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
+  @Get(':id')
+  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.firstaidService.findOne(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one firstaid admin', description: 'Find one firstaid admin' })

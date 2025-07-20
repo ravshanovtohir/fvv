@@ -18,20 +18,20 @@ export class DictionaryController {
     return this.dictionaryService.findAll(query, headers.lang);
   }
 
-  @ApiOperation({ summary: 'Find one dictionary mobile', description: 'Find one dictionary mobile' })
-  // @UseGuards(JwtAuthGuard, RolesGuard)
-  // @Roles([UserRoles.USER])
-  @Get(':id')
-  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
-    return this.dictionaryService.findOne(+id, headers.lang);
-  }
-
   @ApiOperation({ summary: 'Find all dictionaries admin', description: 'Find all dictionaries admin' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles([UserRoles.ADMIN])
   @Get('admin/dictionaries')
   async findAllAdmin(@Query() query: GetDictionaryDto) {
     return this.dictionaryService.findAllAdmin(query);
+  }
+
+  @ApiOperation({ summary: 'Find one dictionary mobile', description: 'Find one dictionary mobile' })
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
+  @Get(':id')
+  async findOne(@Param('id') id: string, @HeadersValidation() headers: DeviceHeadersDto) {
+    return this.dictionaryService.findOne(+id, headers.lang);
   }
 
   @ApiOperation({ summary: 'Find one dictionary admin', description: 'Find one dictionary admin' })
