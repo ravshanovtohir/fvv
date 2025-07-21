@@ -4,6 +4,7 @@ import { PrismaService } from '@prisma';
 import { paginate } from '@helpers';
 import * as path from 'path';
 import * as fs from 'fs';
+import { FilePath } from '@constants';
 
 @Injectable()
 export class FirstaidService {
@@ -30,7 +31,7 @@ export class FirstaidService {
         id: firstaid?.id,
         title: firstaid?.[`title_${lang}`],
         description: firstaid?.[`description_${lang}`],
-        image: `$/uploads/firstaid_images/${firstaid.image}`,
+        image: `${FilePath?.FIRSTAID_IMAGE}/${firstaid.image}`,
         category_id: firstaid?.category_id,
         created_at: firstaid?.created_at,
       })),
@@ -56,7 +57,7 @@ export class FirstaidService {
       id: firstaid?.id,
       title: firstaid?.[`title_${lang}`],
       description: firstaid?.[`description_${lang}`],
-      image: `$/uploads/firstaid_images/${firstaid.image}`,
+      image: `${FilePath?.FIRSTAID_IMAGE}/${firstaid.image}`,
       category_id: firstaid?.category_id,
       created_at: firstaid?.created_at,
     };
@@ -85,9 +86,13 @@ export class FirstaidService {
       ...firstaids,
       data: firstaids?.data?.map((firstaid) => ({
         id: firstaid?.id,
-        title: firstaid?.title_uz,
-        description: firstaid?.description_uz,
-        image: `$/uploads/firstaid_images/${firstaid?.image}`,
+        title_uz: firstaid?.title_uz,
+        title_ru: firstaid?.title_ru,
+        title_en: firstaid?.title_en,
+        description_uz: firstaid?.description_uz,
+        description_ru: firstaid?.description_ru,
+        description_en: firstaid?.description_en,
+        image: `${FilePath?.FIRSTAID_IMAGE}/${firstaid?.image}`,
         category_id: firstaid?.category_id,
         created_at: firstaid?.created_at,
       })),
@@ -117,9 +122,13 @@ export class FirstaidService {
 
     return {
       id: firstaid?.id,
-      title: firstaid?.title_uz,
-      description: firstaid?.description_uz,
-      image: `$/uploads/firstaid_images/${firstaid.image}`,
+      title_uz: firstaid?.title_uz,
+      title_ru: firstaid?.title_ru,
+      title_en: firstaid?.title_en,
+      description_uz: firstaid?.description_uz,
+      description_ru: firstaid?.description_ru,
+      description_en: firstaid?.description_en,
+      image: `${FilePath?.FIRSTAID_IMAGE}/${firstaid.image}`,
       category_id: firstaid?.category_id,
       created_at: firstaid?.created_at,
     };

@@ -4,6 +4,7 @@ import { PrismaService } from '@prisma';
 import { paginate } from '@helpers';
 import * as path from 'path';
 import * as fs from 'fs';
+import { FilePath } from '@constants';
 
 @Injectable()
 export class EncyclopediaService {
@@ -30,7 +31,7 @@ export class EncyclopediaService {
         id: encyclopedia?.id,
         title: encyclopedia?.[`title_${lang}`],
         description: encyclopedia?.[`description_${lang}`],
-        image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+        image: `${FilePath?.ENCYCLOPEDIA_IMAGE}/${encyclopedia?.image}`,
         category_id: encyclopedia?.category_id,
         created_at: encyclopedia?.created_at,
       })),
@@ -56,7 +57,7 @@ export class EncyclopediaService {
       id: encyclopedia?.id,
       title: encyclopedia?.[`title_${lang}`],
       description: encyclopedia?.[`description_${lang}`],
-      image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+      image: `${FilePath?.ENCYCLOPEDIA_IMAGE}/${encyclopedia?.image}`,
       category_id: encyclopedia?.category_id,
       created_at: encyclopedia?.created_at,
     };
@@ -84,8 +85,16 @@ export class EncyclopediaService {
     return {
       ...encyclopedias,
       data: encyclopedias?.data?.map((encyclopedia) => ({
-        ...encyclopedia,
-        image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+        id: encyclopedia?.id,
+        title_uz: encyclopedia?.title_uz,
+        title_ru: encyclopedia?.title_ru,
+        title_en: encyclopedia?.title_en,
+        description_uz: encyclopedia?.description_uz,
+        description_ru: encyclopedia?.description_ru,
+        description_en: encyclopedia?.description_en,
+        image: `${FilePath?.ENCYCLOPEDIA_IMAGE}/${encyclopedia?.image}`,
+        category_id: encyclopedia?.category_id,
+        created_at: encyclopedia?.created_at,
       })),
     };
   }
@@ -112,8 +121,16 @@ export class EncyclopediaService {
       throw new NotFoundException('Энциклопедия не найдена!');
     }
     return {
-      ...encyclopedia,
-      image: `$/uploads/encyclopedia_images/${encyclopedia?.image}`,
+      id: encyclopedia?.id,
+      title_uz: encyclopedia?.title_uz,
+      title_ru: encyclopedia?.title_ru,
+      title_en: encyclopedia?.title_en,
+      description_uz: encyclopedia?.description_uz,
+      description_ru: encyclopedia?.description_ru,
+      description_en: encyclopedia?.description_en,
+      image: `${FilePath?.ENCYCLOPEDIA_IMAGE}/${encyclopedia?.image}`,
+      category_id: encyclopedia?.category_id,
+      created_at: encyclopedia?.created_at,
     };
   }
 

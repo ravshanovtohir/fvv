@@ -33,9 +33,13 @@ export class CategoryService {
     return {
       ...categories,
       data: categories?.data?.map((category) => ({
-        ...category,
+        id: category?.id,
         type: CategoryType?.[category?.type],
+        title_uz: category?.title_uz,
+        title_ru: category?.title_ru,
+        title_en: category?.title_en,
         image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
+        created_at: category?.created_at,
       })),
     };
   }
