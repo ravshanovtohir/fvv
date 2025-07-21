@@ -1,14 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { BadRequestException, ValidationPipe, VersioningType } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as basicAuth from 'express-basic-auth';
 import { APP_PORT } from './config';
-import { WinstonLoggerService } from '@logger';
-import { LoggingInterceptor } from '@interceptors';
+import { AppModule } from './app.module';
 import { ParseFiltersPipe } from '@pipes';
-import { AllExceptionFilter } from '@exceptions';
+import { NestFactory } from '@nestjs/core';
 import { globalHeaderParametrs } from '@enums';
+import { WinstonLoggerService } from '@logger';
+import * as basicAuth from 'express-basic-auth';
+import { AllExceptionFilter } from '@exceptions';
+import { LoggingInterceptor } from '@interceptors';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { BadRequestException, ValidationPipe, VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -50,6 +50,7 @@ async function bootstrap() {
       challenge: true,
       users: {
         '1': '1',
+        'fvv_user_nuriddin': 'fvv_user_nuriddin',
       },
     }),
   );

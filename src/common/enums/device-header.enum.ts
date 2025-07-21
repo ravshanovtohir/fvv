@@ -16,7 +16,7 @@ export const globalHeaderParametrs: ParameterObject[] = [
   {
     in: 'header',
     name: 'lang',
-    required: true,
+    required: false,
     schema: {
       enum: ['uz', 'ru', 'en'],
       type: 'string',

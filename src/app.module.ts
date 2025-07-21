@@ -1,9 +1,11 @@
+import { join } from 'path';
+import { validate } from '@config';
+import { PrismaModule } from '@prisma';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { validate } from '@config';
 import { WinstonLoggerService } from '@logger';
 import { LoggingInterceptor } from '@interceptors';
-import { PrismaModule } from '@prisma';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import {
   MapModule,
   UserModule,
@@ -18,8 +20,6 @@ import {
   NotificationModule,
   EncyclopediaModule,
 } from '@modules';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -41,19 +41,19 @@ import { ServeStaticModule } from '@nestjs/serve-static';
         index: false,
       },
     }),
+    MapModule,
     AuthModule,
     UserModule,
     TestModule,
+    AboutModule,
     StaffModule,
     PrismaModule,
     FirstaidModule,
     CategoryModule,
+    LocationModule,
     DictionaryModule,
     EncyclopediaModule,
-    AboutModule,
     NotificationModule,
-    LocationModule,
-    MapModule,
   ],
   controllers: [],
   providers: [WinstonLoggerService, LoggingInterceptor],
