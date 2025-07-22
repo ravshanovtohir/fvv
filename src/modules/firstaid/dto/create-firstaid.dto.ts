@@ -36,4 +36,7 @@ export class CreateFirstaidDto {
   @IsNotEmpty()
   @IsInt()
   category_id: number;
+
+  @ApiProperty({ description: 'Image', example: 'https://example.com/image.jpg', required: true, format: 'binary' })
+  image: string;
 }
