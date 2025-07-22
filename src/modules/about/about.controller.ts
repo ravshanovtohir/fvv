@@ -29,8 +29,8 @@ export class AboutController {
     summary: 'Mobile uchun',
     description: 'Only for mobile.',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get()
   async find(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.find(headers.lang);
@@ -121,11 +121,11 @@ export class AboutController {
   }
 
   @ApiOperation({
-    summary: 'Find all contacts',
-    description: 'Find all contacts',
+    summary: 'Find all contacts mobile',
+    description: 'Find all contacts mobile',
   })
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles([UserRoles.USER])
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles([UserRoles.USER])
   @Get('contact')
   findAllContacts(@HeadersValidation() headers: DeviceHeadersDto) {
     return this.aboutService.findAllContacts(headers.lang);
