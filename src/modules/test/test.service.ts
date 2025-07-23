@@ -98,45 +98,50 @@ export class TestService {
   }
 
   async create(data: CreateTestDto) {
-    const category = await this.prisma.category.findUnique({
-      where: {
-        id: data.category_id,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!category) {
-      throw new NotFoundException('Категория не найдена!');
-    }
+    for (const test of data.tests) {
+      const category = await this.prisma.category.findUnique({
+        where: {
+          id: test.category_id,
+        },
+        select: {
+          id: true,
+        },
+      });
+      if (!category) {
+        throw new NotFoundException(`Категория не найдена в тесте: ${test.question_ru}!`);
+      }
 
-    if (data.answers_uz.length < 3) {
-      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
-    }
-    if (data.answers_ru.length < 3) {
-      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
-    }
-    if (data.answers_en.length < 3) {
-      throw new BadRequestException('У теста должно быть минимум 3 варианта ответа!');
-    }
+      if (test.answers_uz.length < 3) {
+        throw new BadRequestException(`У теста должно быть минимум 3 варианта ответа: ${test.question_ru}!`);
+      }
+      if (test.answers_ru.length < 3) {
+        throw new BadRequestException(`У теста должно быть минимум 3 варианта ответа: ${test.question_ru}!`);
+      }
+      if (test.answers_en.length < 3) {
+        throw new BadRequestException(`У теста должно быть минимум 3 варианта ответа: ${test.question_ru}!`);
+      }
 
-    const keys = ['answers_uz', 'answers_ru', 'answers_en'];
-    for (const k of keys) {
-      if (!data[k].some((a: any) => a.key === data.true_answer)) {
-        throw new BadRequestException(`Ключ правильного ответа ${data.true_answer} отсутствует в вариантах ${k}!`);
+      const keys = ['answers_uz', 'answers_ru', 'answers_en'];
+      for (const k of keys) {
+        if (!test[k].some((a: any) => a.key === test.true_answer)) {
+          throw new BadRequestException(
+            `В тесте ${test.question_ru} ключ правильного ответа ${test.true_answer} отсутствует в вариантах ${k} !`,
+          );
+        }
       }
     }
-    await this.prisma.test.create({
-      data: {
-        question_uz: data.question_uz,
-        question_ru: data.question_ru,
-        question_en: data.question_en,
-        answers_uz: data.answers_uz,
-        answers_ru: data.answers_ru,
-        answers_en: data.answers_en,
-        true_answer: data.true_answer,
-        category_id: data.category_id,
-      },
+
+    await this.prisma.test.createMany({
+      data: data?.tests?.map((test) => ({
+        question_uz: test?.question_uz,
+        question_ru: test?.question_ru,
+        question_en: test?.question_en,
+        answers_uz: test?.answers_uz,
+        answers_ru: test?.answers_ru,
+        answers_en: test?.answers_en,
+        true_answer: test?.true_answer,
+        category_id: test?.category_id,
+      })),
     });
     return 'Тест успешно создан!';
   }

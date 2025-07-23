@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsArray, IsObject, IsNumber } from 'class-validator';
-
-export class CreateTestDto {
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, IsArray, IsNumber, ValidateNested } from 'class-validator';
+class Test {
   @ApiProperty({ description: 'Savol (uz)', example: 'Poytaxti qayer?', required: true, type: String })
   @IsNotEmpty()
   @IsString()
@@ -77,4 +77,13 @@ export class CreateTestDto {
   @IsNotEmpty()
   @IsNumber()
   category_id: number;
+}
+
+export class CreateTestDto {
+  @ApiProperty({ description: 'Test', type: [Test], required: true })
+  @IsNotEmpty()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Test)
+  tests: Test[];
 }
