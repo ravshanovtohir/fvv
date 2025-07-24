@@ -31,7 +31,7 @@ jobs:
             pnpm install
 
             # Approve build scripts for all dependencies automatically
-            pnpm approve-builds --yes
+            pnpm approve-builds -y || echo "approve-builds skipped"
 
             # Build project
             pnpm build
