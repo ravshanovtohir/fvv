@@ -23,13 +23,26 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/fvv_api || { echo "Project folder not found"; exit 1; }
-            git fetch origin master || { echo "git fetch failed"; exit 1; }
-            git reset --hard origin/master || { echo "git reset failed"; exit 1; }
-            pnpm install --frozen-lockfile
-            pnpm build
+            cd /var/www/fvv_api || { echo "Directory not found"; exit 1; }
+
+            # Git update with reset to avoid diverged branches
+            git fetch --all
+            git reset --hard origin/master
+
+            # Install dependencies
+            pnpm install
+
+            # Approve build scripts (important for prisma and bcrypt)
+            pnpm approve-builds
+
+            # Build with verbose logs
+            pnpm build --verbose
+
+            # Prisma migrations and generation
             npx prisma migrate deploy --name migrated
             npx prisma generate
+
+            # Restart PM2
             pm2 restart 0
 
       # Step 3: Notify Telegram on success
@@ -50,4 +63,4 @@ jobs:
           COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-          -d text="CD Failed.\\nCommit: $COMMIT_MESSAGE\\nAuthor: $COMMIT_AUTHOR"
+          -d text="CD Failed.%0ACommit: $COMMIT_MESSAGE%0AAuthor: $COMMIT_AUTHOR"
