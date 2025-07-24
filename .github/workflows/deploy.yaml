@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Setup SSH and deploy
       - name: Setup SSH and deploy
         uses: appleboy/ssh-action@master
         with:
@@ -25,27 +23,26 @@ jobs:
           script: |
             cd /var/www/fvv_api || { echo "Directory not found"; exit 1; }
 
-            # Git update with reset to avoid diverged branches
+            # Git update
             git fetch --all
             git reset --hard origin/master
 
             # Install dependencies
             pnpm install
 
-            # Approve build scripts (important for prisma and bcrypt)
-            pnpm approve-builds
+            # Approve build scripts for all dependencies automatically
+            pnpm approve-builds --yes
 
-            # Build with verbose logs
-            pnpm build --verbose
+            # Build project
+            pnpm build
 
-            # Prisma migrations and generation
-            npx prisma migrate deploy --name migrated
+            # Apply prisma migrations (deploy mode, no --name)
+            npx prisma migrate deploy
             npx prisma generate
 
             # Restart PM2
             pm2 restart 0
 
-      # Step 3: Notify Telegram on success
       - name: Notify Telegram on success
         if: success()
         run: |
@@ -55,7 +52,6 @@ jobs:
           -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
           -d text="CD Successfully.%0ACommit: $COMMIT_MESSAGE%0AAuthor: $COMMIT_AUTHOR"
 
-      # Step 4: Notify Telegram on failure
       - name: Notify Telegram on failure
         if: failure()
         run: |
