@@ -23,7 +23,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd ~/var/www/fvv_api/ 
+            cd /var/www/fvv_api
             git stash || { echo "git stash failed"; exit 1; }
             git pull origin master || { echo "git pull failed"; exit 1; }
             pnpm install
