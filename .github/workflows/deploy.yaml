@@ -14,7 +14,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Setup SSH and run necessary commands
+      # Step 2: Setup SSH and deploy
       - name: Setup SSH and deploy
         uses: appleboy/ssh-action@master
         with:
@@ -23,13 +23,13 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /var/www/fvv_api
-            git stash || { echo "git stash failed"; exit 1; }
-            git pull origin master || { echo "git pull failed"; exit 1; }
-            pnpm install
-            pnpm build  # Loyiha build qilish
-            npx prisma migrate deploy --name migrated  # Prisma migratsiya
-            npx prisma generate  # Prisma fayllarini generatsiya qilish
+            cd /var/www/fvv_api || { echo "Project folder not found"; exit 1; }
+            git fetch origin master || { echo "git fetch failed"; exit 1; }
+            git reset --hard origin/master || { echo "git reset failed"; exit 1; }
+            pnpm install --frozen-lockfile
+            pnpm build
+            npx prisma migrate deploy --name migrated
+            npx prisma generate
             pm2 restart 0
 
       # Step 3: Notify Telegram on success
