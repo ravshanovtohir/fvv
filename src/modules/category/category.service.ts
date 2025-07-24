@@ -34,11 +34,14 @@ export class CategoryService {
       ...categories,
       data: categories?.data?.map((category) => ({
         id: category?.id,
-        type: CategoryType?.[category?.type],
         title_uz: category?.title_uz,
         title_ru: category?.title_ru,
         title_en: category?.title_en,
         image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
+        category_type: {
+          key: category?.type,
+          value: CategoryType?.[category?.type],
+        },
         created_at: category?.created_at,
       })),
     };
@@ -61,9 +64,16 @@ export class CategoryService {
     });
 
     return {
-      ...category,
-      type: CategoryType?.[category?.type],
+      id: category?.id,
+      title_uz: category?.title_uz,
+      title_ru: category?.title_ru,
+      title_en: category?.title_en,
       image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
+      category_type: {
+        key: category?.type,
+        value: CategoryType?.[category?.type],
+      },
+      created_at: category?.created_at,
     };
   }
 
@@ -91,6 +101,10 @@ export class CategoryService {
       type: CategoryType?.[+category?.type],
       title: category?.[`title_${lang}`],
       image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
+      category_type: {
+        key: category?.type,
+        value: CategoryType?.[category.type.toString()],
+      },
       created_at: category?.created_at,
     }));
   }
@@ -112,6 +126,10 @@ export class CategoryService {
       title: category?.[`title_${lang}`],
       type: CategoryType?.[+category?.type],
       image: `${FilePath?.CATEGORY_ICON}/${category?.icon}`,
+      category_type: {
+        key: category?.type,
+        value: CategoryType?.[category.type.toString()],
+      },
       created_at: category?.created_at,
     };
   }
