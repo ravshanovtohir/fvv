@@ -1,6 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsArray, IsNumber, ValidateNested } from 'class-validator';
+import { IsNotEmpty, IsString, IsArray, IsNumber, ValidateNested, IsObject } from 'class-validator';
+
+class AnswerDto {
+  @IsNotEmpty()
+  @IsString()
+  key: string;
+
+  @IsNotEmpty()
+  @IsString()
+  value: string;
+}
 class Test {
   @ApiProperty({ description: 'Savol (uz)', example: 'Poytaxti qayer?', required: true, type: String })
   @IsNotEmpty()
@@ -31,8 +41,9 @@ class Test {
   })
   @IsNotEmpty()
   @IsArray()
-  // @IsObject({ each: true })
-  answers_uz: Array<{ key: string; value: string }>;
+  @ValidateNested({ each: true })
+  @Type(() => AnswerDto)
+  answers_uz: AnswerDto[];
 
   @ApiProperty({
     description: 'Javob variantlari (ru)',
@@ -48,8 +59,9 @@ class Test {
   })
   @IsNotEmpty()
   @IsArray()
-  // @IsObject({ each: true })
-  answers_ru: Array<{ key: string; value: string }>;
+  @ValidateNested({ each: true })
+  @Type(() => AnswerDto)
+  answers_ru: AnswerDto[];
 
   @ApiProperty({
     description: 'Javob variantlari (en)',
@@ -65,8 +77,9 @@ class Test {
   })
   @IsNotEmpty()
   @IsArray()
-  // @IsObject({ each: true })
-  answers_en: Array<{ key: string; value: string }>;
+  @ValidateNested({ each: true })
+  @Type(() => AnswerDto)
+  answers_en: AnswerDto[];
 
   @ApiProperty({ description: 'To‘g‘ri javob kaliti (masalan, A)', example: 'A', required: true, type: String })
   @IsNotEmpty()

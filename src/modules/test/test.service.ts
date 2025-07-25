@@ -26,7 +26,7 @@ export class TestService {
       data: tests?.data?.map((test) => ({
         id: test?.id,
         question: test?.[`question_${lang}`],
-        answers: test?.[`answers_${lang}`],
+        answers: JSON.parse(test?.[`answers_${lang}`]),
         true_answer: test?.true_answer,
         created_at: test?.created_at,
       })),
@@ -73,7 +73,20 @@ export class TestService {
         created_at: true,
       },
     });
-    return tests;
+    return {
+      ...tests,
+      data: tests?.data?.map((test) => ({
+        id: test?.id,
+        question_uz: test?.question_uz,
+        question_ru: test?.question_ru,
+        question_en: test?.question_en,
+        answers_uz: JSON.parse(test?.answers_uz as string),
+        answers_ru: JSON.parse(test?.answers_ru as string),
+        answers_en: JSON.parse(test?.answers_en as string),
+        true_answer: test?.true_answer,
+        created_at: test?.created_at,
+      })),
+    };
   }
 
   async findOneAdmin(id: number) {
@@ -94,7 +107,12 @@ export class TestService {
     if (!test) {
       throw new NotFoundException('Тест не найден!');
     }
-    return test;
+    return {
+      ...test,
+      answers_uz: JSON.parse(test?.answers_uz as string),
+      answers_ru: JSON.parse(test?.answers_ru as string),
+      answers_en: JSON.parse(test?.answers_en as string),
+    };
   }
 
   async create(data: CreateTestDto) {
@@ -130,15 +148,14 @@ export class TestService {
         }
       }
     }
-
     await this.prisma.test.createMany({
       data: data?.tests?.map((test) => ({
         question_uz: test?.question_uz,
         question_ru: test?.question_ru,
         question_en: test?.question_en,
-        answers_uz: test?.answers_uz,
-        answers_ru: test?.answers_ru,
-        answers_en: test?.answers_en,
+        answers_uz: JSON.stringify(test?.answers_uz),
+        answers_ru: JSON.stringify(test?.answers_ru),
+        answers_en: JSON.stringify(test?.answers_en),
         true_answer: test?.true_answer,
         category_id: test?.category_id,
       })),
@@ -271,7 +288,7 @@ export class TestService {
       test: {
         id: test.id,
         question: test[`question_${lang}`],
-        answers: test[`answers_${lang}`],
+        answers: JSON.parse(test[`answers_${lang}`]),
       },
       current: nextIndex + 1,
       total: tests.length,
